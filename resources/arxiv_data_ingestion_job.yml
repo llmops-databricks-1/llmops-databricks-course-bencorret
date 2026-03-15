@@ -1,9 +1,9 @@
 resources:
   jobs:
-    hello_world_job:
-      name: hello-world
+    global_findex_data_ingestion_job:
+      name: global_findex_data_ingestion
       tags:
-        project_name: "llmops-databricks-course-bencorret"
+        project_name: "global-findex-curator"
 
       environments:
         - environment_key: default
@@ -13,10 +13,10 @@ resources:
               - ../dist/*.whl
 
       tasks:
-        - task_key: hello_world
+        - task_key: global_findex_data_ingestion
           environment_key: default
           notebook_task:
-            notebook_path: ../notebooks/hello_world.py
+            notebook_path: ../notebooks/1.3_global_findex_data_ingestion.py
             base_parameters:
               env: ${bundle.target}
               git_sha: "${var.git_sha}"

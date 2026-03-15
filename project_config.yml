@@ -6,7 +6,7 @@ dev:
   embeding_endpoint: databricks-gte-large-en
   warehouse_id: f6de440a1a1cec62
   vector_search_endpoint: llmops_course_vs_endpoint
-  # genie_space_id: 
+  genie_space_id: null
 
 acc:
   catalog: llmops_acc
@@ -16,7 +16,7 @@ acc:
   embeding_endpoint: databricks-gte-large-en
   warehouse_id: f6de440a1a1cec62
   vector_search_endpoint: llmops_course_vs_endpoint
-  # genie_space_id: 
+  genie_space_id: null
 
 prd:
   catalog: llmops_prd
@@ -26,7 +26,7 @@ prd:
   embeding_endpoint: databricks-gte-large-en
   warehouse_id: f6de440a1a1cec62
   vector_search_endpoint: llmops_course_vs_endpoint
-  # genie_space_id: 
+  genie_space_id: null
 
 # Model configuration
 model_config:

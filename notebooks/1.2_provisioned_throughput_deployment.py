@@ -79,7 +79,7 @@ MIN_PROVISIONED_THROUGHPUT = 0  # Must be 0 when scale_to_zero is enabled
 MAX_PROVISIONED_THROUGHPUT = 20  # Max capacity for auto-scaling
 
 catalog = "llmops_dev"
-schema = "arxiv"
+schema = "global_findex"
 BUDGET_POLICY_ID = None  # e.g. "my-budget-policy-id"
 # COMMAND ----------
 
