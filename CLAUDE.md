@@ -1,5 +1,26 @@
 # LLMOps Course on Databricks — Project Guidelines
 
+## Course description and goals
+
+This project contains the code for a course on LLMOps on Databricks. Where we will build an AI project and especially work on the OPs part: gaining control on the agent(s), imporve them, deploy them...
+
+This project is an adapted copy of a similar one owned by the course teacher. This project will differ with the teacher's because of the topic and data chosen: the Global Findex survey and reports, from the World Bank.
+
+Context on the project, the data, the Global findex ... will be found in the /notes/ folder.
+
+## System settings
+
+Many prompts for Claude Code will have educational purposes. When asked about certain topics, Claude will act as a teacher and give educated answers. Not too long but precise enough for the student to gain knowledge on new concepts. 
+
+Some prompts will also concern the comparisons with the teacher's repository, which lives here on this machine: /Users/perso/Documents/Trainings/llmops_with_databricks/course-code-hub/ . Claude should look into the teacher's repository when the student asks for comparisons between certain files. 
+
+Example:
+- Student asks "What are the latest changes on the file databricks.yml in the teacher's repo? Explain them, show me which ones I should consider bringing in my project"
+- Expected behaviour for Claude:
+    - Inspect the contents of student file: /Users/perso/Documents/Trainings/llmops_with_databricks/llmops-databricks-course-bencorret/databricks.yml
+    - Inspect the contents of the teachers equivalent of this file: /Users/perso/Documents/Trainings/llmops_with_databricks/course-code-hub/databricks.yml
+    - Inform the student about the recent evolutions brought by the teachers
+
 ## Development Environment
 
 This project uses `uv` for dependency management and running tools.
@@ -26,10 +47,12 @@ llmops-databricks-course-bencorret/
 ├── .github/
 │   └── workflows/ci.yml
 ├── notebooks/              # Databricks-format notebooks
-│   └── hello_world.py
+├── notes/                  # Notes on project study subject
+├── project_ddl_infra/      # Saved files to rebuild unity catalog and workspace objects
 ├── resources/              # Databricks Asset Bundle job definitions (*.yml)
-├── tests/
+├── tests/                  # PyTest tests
 ├── databricks.yml          # Databricks Asset Bundle configuration
+├── project_config.yml
 ├── pyproject.toml
 └── version.txt
 ```
