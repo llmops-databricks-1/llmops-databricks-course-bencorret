@@ -3,7 +3,7 @@ dev:
   schema: golbal_findex
   volume: globa_findex_files
   llm_endpoint: databricks-llama-4-maverick
-  embeding_endpoint: databricks-gte-large-en
+  embedding_endpoint: databricks-gte-large-en
   warehouse_id: f6de440a1a1cec62
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
@@ -13,7 +13,7 @@ acc:
   schema: golbal_findex
   volume: globa_findex_files
   llm_endpoint: databricks-llama-4-maverick
-  embeding_endpoint: databricks-gte-large-en
+  embedding_endpoint: databricks-gte-large-en
   warehouse_id: f6de440a1a1cec62
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
@@ -23,7 +23,7 @@ prd:
   schema: golbal_findex
   volume: globa_findex_files
   llm_endpoint: databricks-llama-4-maverick
-  embeding_endpoint: databricks-gte-large-en
+  embedding_endpoint: databricks-gte-large-en
   warehouse_id: f6de440a1a1cec62
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null

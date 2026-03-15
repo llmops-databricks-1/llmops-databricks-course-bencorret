@@ -142,7 +142,7 @@ schema = StructType([
     StructField("title", StringType(), False),
     StructField("authors", ArrayType(StringType()), True),
     StructField("summary", StringType(), True),
-    StructField("published", LongType(), True),
+    StructField("published", StringType(), True),
     StructField("updated", StringType(), True),
     StructField("categories", StringType(), True),
     StructField("document_type", StringType(), True),
