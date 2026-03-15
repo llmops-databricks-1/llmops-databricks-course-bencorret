@@ -3,7 +3,7 @@ Different files were extracted from a World Bank's website. They all concern the
 
 Here is a brief introduction to the goal of this report:
 ___
-*Financial inclusion is a cornerstone of development, and since 2011, the Global Findex Database has been the definitive source of data on the ways in which adults around the world use financial services, from payments to savings and borrowing, and manage financial events such as a major expense or a loss of income. Results from the first survey were published in 2011 and have been followed by subsequent survey results from 2014, 2017, and 2021. 
+*Financial inclusion is a cornerstone of development, and since 2011, the Global Findex Database has been the definitive source of data on the ways in which adults around the world use financial services, from payments to savings and borrowing, and manage financial events such as a major expense or a loss of income. Results from the first survey were published in 2011 and have been followed by subsequent survey results from 2014, 2017, and 2021.
 The 2025 edition, based on nationally representative surveys of about 148,000 adults in 141 economies and conducted over the calendar year 2024, contains updated indicators on access to and use of formal and informal financial services to save, borrow, make payments, and manage financial risk, and the first globally comparable data on mobile phone ownership, internet use, and digital safety. The data also identify gaps in access to and use of digital and financial services by women and poor adults.*
 ___
 

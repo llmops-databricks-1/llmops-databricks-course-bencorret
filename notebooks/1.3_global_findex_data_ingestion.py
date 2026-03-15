@@ -27,6 +27,7 @@ logger.info(f"Schema {CATALOG}.{SCHEMA} ready")
 # COMMAND ----------
 # Define documents metadata
 
+
 def define_global_findex_documents():
     """
     Fetch generated documents metadata. Hardcoded.
@@ -47,7 +48,7 @@ def define_global_findex_documents():
             "primary_category": "Survey data",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/findex_microdata_2025.csv"
+            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/findex_microdata_2025.csv",
         },
         {
             "id": "2",
@@ -61,7 +62,7 @@ def define_global_findex_documents():
             "primary_category": "Data Documentation",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/documentation_microdata.pdf"
+            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/documentation_microdata.pdf",
         },
         {
             "id": "3",
@@ -75,7 +76,7 @@ def define_global_findex_documents():
             "primary_category": "Financial Inclusion",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/Global findex - The little data book.pdf"
+            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/Global findex - The little data book.pdf",
         },
         {
             "id": "4",
@@ -89,7 +90,7 @@ def define_global_findex_documents():
             "primary_category": "Financial Inclusion",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/Global findex 2025 - Executive report.pdf"
+            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/Global findex 2025 - Executive report.pdf",
         },
         {
             "id": "5",
@@ -103,7 +104,7 @@ def define_global_findex_documents():
             "primary_category": "Financial Inclusion",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/Global findex database 2025.pdf"
+            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/Global findex database 2025.pdf",
         },
         {
             "id": "6",
@@ -117,11 +118,12 @@ def define_global_findex_documents():
             "primary_category": "Survey data",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/global_findex_database_2025.csv"
+            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/global_findex_database_2025.csv",
         },
     ]
 
     return documents
+
 
 logger.info("Generating documents metadata...")
 documents = define_global_findex_documents()
@@ -137,20 +139,22 @@ logger.info(f"Document Type: {documents[0]['document_type']}")
 # Store the Global Findex documents metadata in a Delta table for downstream processing.
 
 # Define schema
-schema = StructType([
-    StructField("id", StringType(), False),
-    StructField("title", StringType(), False),
-    StructField("authors", ArrayType(StringType()), True),
-    StructField("summary", StringType(), True),
-    StructField("published", StringType(), True),
-    StructField("updated", StringType(), True),
-    StructField("categories", StringType(), True),
-    StructField("document_type", StringType(), True),
-    StructField("primary_category", StringType(), True),
-    StructField("ingestion_timestamp", StringType(), True),
-    StructField("processed", LongType(), True),
-    StructField("volume_path", StringType(), True)  # Will be set in Lecture 2.2
-])
+schema = StructType(
+    [
+        StructField("id", StringType(), False),
+        StructField("title", StringType(), False),
+        StructField("authors", ArrayType(StringType()), True),
+        StructField("summary", StringType(), True),
+        StructField("published", StringType(), True),
+        StructField("updated", StringType(), True),
+        StructField("categories", StringType(), True),
+        StructField("document_type", StringType(), True),
+        StructField("primary_category", StringType(), True),
+        StructField("ingestion_timestamp", StringType(), True),
+        StructField("processed", LongType(), True),
+        StructField("volume_path", StringType(), True),  # Will be set in Lecture 2.2
+    ]
+)
 
 # Create DataFrame
 df = spark.createDataFrame(documents, schema=schema)
@@ -158,11 +162,9 @@ df = spark.createDataFrame(documents, schema=schema)
 # Write to Delta table
 table_path = f"{CATALOG}.{SCHEMA}.{TABLE_NAME}"
 
-df.write \
-    .format("delta") \
-    .mode("overwrite") \
-    .option("mergeSchema", "true") \
-    .saveAsTable(table_path)
+df.write.format("delta").mode("overwrite").option("mergeSchema", "true").saveAsTable(
+    table_path
+)
 
 logger.info(f"Created Delta table: {table_path}")
 logger.info(f"Records: {df.count()}")
@@ -188,6 +190,6 @@ logger.info("Documents by primary category:")
 documents_df.groupBy("primary_category").count().orderBy("count", ascending=False).show()
 
 logger.info("Most recent documents:")
-documents_df.select("title", "published", "id") \
-    .orderBy("published", ascending=False) \
-    .show(5, truncate=60)
+documents_df.select("title", "published", "id").orderBy(
+    "published", ascending=False
+).show(5, truncate=60)

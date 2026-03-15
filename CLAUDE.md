@@ -10,9 +10,9 @@ Context on the project, the data, the Global findex ... will be found in the /no
 
 ## System settings
 
-Many prompts for Claude Code will have educational purposes. When asked about certain topics, Claude will act as a teacher and give educated answers. Not too long but precise enough for the student to gain knowledge on new concepts. 
+Many prompts for Claude Code will have educational purposes. When asked about certain topics, Claude will act as a teacher and give educated answers. Not too long but precise enough for the student to gain knowledge on new concepts.
 
-Some prompts will also concern the comparisons with the teacher's repository, which lives here on this machine: /Users/perso/Documents/Trainings/llmops_with_databricks/course-code-hub/ . Claude should look into the teacher's repository when the student asks for comparisons between certain files. 
+Some prompts will also concern the comparisons with the teacher's repository, which lives here on this machine: /Users/perso/Documents/Trainings/llmops_with_databricks/course-code-hub/ . Claude should look into the teacher's repository when the student asks for comparisons between certain files.
 
 Example:
 - Student asks "What are the latest changes on the file databricks.yml in the teacher's repo? Explain them, show me which ones I should consider bringing in my project"
