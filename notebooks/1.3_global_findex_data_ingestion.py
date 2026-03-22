@@ -48,7 +48,7 @@ def define_global_findex_documents():
             "primary_category": "Survey data",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/findex_microdata_2025.csv",
+            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/findex_microdata_2025/findex_microdata_2025.csv",
         },
         {
             "id": "2",
@@ -62,7 +62,7 @@ def define_global_findex_documents():
             "primary_category": "Data Documentation",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/documentation_microdata.pdf",
+            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/documentation_microdata/documentation_microdata.pdf",
         },
         {
             "id": "3",
@@ -76,7 +76,7 @@ def define_global_findex_documents():
             "primary_category": "Financial Inclusion",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/Global findex - The little data book.pdf",
+            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/Global_findex_-_The_little_data_book/Global_findex_-_The_little_data_book.pdf",
         },
         {
             "id": "4",
@@ -90,7 +90,7 @@ def define_global_findex_documents():
             "primary_category": "Financial Inclusion",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/Global findex 2025 - Executive report.pdf",
+            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/Global_findex_2025_-_Executive_report/Global_findex_2025_-_Executive_report.pdf",
         },
         {
             "id": "5",
@@ -104,7 +104,7 @@ def define_global_findex_documents():
             "primary_category": "Financial Inclusion",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/Global findex database 2025.pdf",
+            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/Global_findex_database_2025/Global_findex_database_2025.pdf",
         },
         {
             "id": "6",
@@ -118,7 +118,7 @@ def define_global_findex_documents():
             "primary_category": "Survey data",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/global_findex_database_2025.csv",
+            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/global_findex_database_2025/global_findex_database_2025.csv",
         },
     ]
 
