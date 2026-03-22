@@ -1,11 +1,9 @@
 """
-arXiv API
-   ↓ (download_and_store_papers)
-PDFs in Volume + arxiv_papers table
+PDFs in Volume + global_findex_documents table
    ↓ (parse_pdfs_with_ai)
 ai_parsed_docs_table (JSON)
    ↓ (process_chunks)
-arxiv_chunks_table (clean text + metadata)
+global_findex_chunks_table (clean text + metadata)
    ↓ (VectorSearchManager - separate class) (2.4 notebook)
 Vector Search Index (embeddings)
 """
@@ -15,7 +13,6 @@ import os
 import re
 import time
 
-import arxiv
 from loguru import logger
 from pyspark.sql import SparkSession
 from pyspark.sql import types as T
@@ -28,14 +25,12 @@ from pyspark.sql.functions import (
 )
 from pyspark.sql.types import ArrayType, StringType, StructField, StructType
 
-from arxiv_curator.config import ProjectConfig
+from global_findex_curator.config import ProjectConfig
 
 
 class DataProcessor:
     """
     DataProcessor handles the complete workflow of:
-    - Downloading papers from arXiv
-    - Storing paper metadata
     - Parsing PDFs with ai_parse_document
     - Extracting and cleaning text chunks
     - Saving chunks to Delta tables
@@ -56,143 +51,10 @@ class DataProcessor:
         self.volume = config.volume
 
         self.end = time.strftime("%Y%m%d%H%M", time.gmtime())
-        self.pdf_dir = f"/Volumes/{self.catalog}/{self.schema}/{self.volume}/{self.end}"
+        self.pdf_dir = f"/Volumes/{self.catalog}/{self.schema}/{self.volume}/pdf"
         os.makedirs(self.pdf_dir, exist_ok=True)
-        self.papers_table = f"{self.catalog}.{self.schema}.arxiv_papers"
+        self.documents_table = f"{self.catalog}.{self.schema}.global_findex_documents"
         self.parsed_table = f"{self.catalog}.{self.schema}.ai_parsed_docs_table"
-
-    def _get_range_start(self) -> str:
-        """
-        Get start time range for arxiv paper search.
-        If arxiv_papers table exists, uses max(processed) as start.
-        Otherwise, uses 3 days ago as start.
-
-        Returns:
-            start string in "YYYYMMDDHHMM" format
-        """
-
-        if self.spark.catalog.tableExists(self.papers_table):
-            result = self.spark.sql(f"""
-                SELECT max(processed)
-                FROM {self.papers_table}
-            """).collect()
-            start = str(result[0][0])
-            logger.info(
-                f"Found existing arxiv_papers table. Starting from: {start}"
-            )
-        else:
-            start = time.strftime(
-                "%Y%m%d%H%M", time.gmtime(time.time() - 24 * 3600 * 3)
-            )
-            logger.info(
-                f"No existing arxiv_papers table. "
-                f"Starting from 3 days ago: {start}"
-            )
-        return start
-
-    def download_and_store_papers(
-        self,
-    ) -> list[dict] | None:
-        """
-        Download papers from arxiv and store metadata
-        in arxiv_papers table.
-
-        Returns:
-            List of paper metadata dictionaries if papers were downloaded,
-            otherwise None
-        """
-        start = self._get_range_start()
-
-        # Search for papers in arxiv
-        client = arxiv.Client()
-        search = arxiv.Search(
-            query=f"cat:cs.AI AND submittedDate:[{start} TO {self.end}]"
-        )
-        papers = client.results(search)
-
-        # Download papers and collect metadata
-        records = []
-
-        for paper in papers:
-            paper_id = paper.get_short_id()
-            try:
-                paper.download_pdf(
-                    dirpath=self.pdf_dir, filename=f"{paper_id}.pdf"
-                )
-                # Collect metadata
-                records.append(
-                    {
-                        "arxiv_id": paper_id,
-                        "title": paper.title,
-                        "authors": [
-                            author.name for author in paper.authors
-                        ],
-                        "summary": paper.summary,
-                        "pdf_url": paper.pdf_url,
-                        "published": int(
-                            paper.published.strftime("%Y%m%d%H%M")
-                        ),
-                        "processed": int(self.end),
-                        "volume_path": f"{self.pdf_dir}/{paper_id}.pdf",
-                    }
-                )
-                break
-            except Exception:
-                logger.warning(
-                    f"Paper {paper_id} was not successfully processed."
-                )
-            # Avoid hitting API rate limits
-            time.sleep(3)
-
-        # Only process if we have records
-        if len(records) == 0:
-            logger.info("No new papers found.")
-            return None
-
-        logger.info(f"Downloaded {len(records)} papers to {self.pdf_dir}")
-
-        # Create DataFrame and save to arxiv_papers table
-        schema = T.StructType(
-            [
-                T.StructField("arxiv_id", T.StringType(), False),
-                T.StructField("title", T.StringType(), True),
-                T.StructField("authors", T.ArrayType(T.StringType()), True),
-                T.StructField("summary", T.StringType(), True),
-                T.StructField("pdf_url", T.StringType(), True),
-                T.StructField("published", T.LongType(), True),
-                T.StructField("processed", T.LongType(), True),
-                T.StructField("volume_path", T.StringType(), True),
-            ]
-        )
-
-        metadata_df = self.spark.createDataFrame(
-            records, schema=schema).withColumn(
-            "ingest_ts", current_timestamp()
-        )
-
-        # Create table if it doesn't exist
-        metadata_df.write.format("delta").mode("ignore").saveAsTable(
-            self.papers_table)
-
-        # MERGE to avoid duplicates based on arxiv_id
-        metadata_df.createOrReplaceTempView("new_papers")
-        self.spark.sql(f"""
-            MERGE INTO {self.papers_table} target
-            USING new_papers source
-            ON target.arxiv_id = source.arxiv_id
-            WHEN NOT MATCHED THEN INSERT (
-                arxiv_id, title, authors, summary, pdf_url,
-                published, processed, volume_path
-            ) VALUES (
-                source.arxiv_id, source.title, source.authors,
-                source.summary, source.pdf_url, source.published,
-                source.processed, source.volume_path
-            )
-        """)
-        logger.info(
-            f"Merged {len(records)} paper records into {self.papers_table}"
-        )
-        return records
 
     def parse_pdfs_with_ai(self) -> None:
         """
@@ -285,7 +147,7 @@ class DataProcessor:
     def process_chunks(self) -> None:
         """
         Process parsed documents to extract and clean chunks.
-        Reads from ai_parsed_docs table and saves to arxiv_chunks table.
+        Reads from ai_parsed_docs table and saves to global_findex_chunks table.
         """
         logger.info(
             f"Processing parsed documents from "
@@ -310,8 +172,8 @@ class DataProcessor:
         extract_paper_id_udf = udf(self._extract_paper_id, StringType())
         clean_chunk_udf = udf(self._clean_chunk, StringType())
 
-        metadata_df = self.spark.table(self.papers_table).select(
-            col("arxiv_id"),
+        metadata_df = self.spark.table(self.documents_table).select(
+            col("id"),
             col("title"),
             col("summary"),
             concat_ws(", ", col("authors")).alias("authors"),
@@ -322,50 +184,42 @@ class DataProcessor:
 
         # Create the transformed dataframe
         chunks_df = (
-            df.withColumn("arxiv_id", extract_paper_id_udf(col("path")))
+            df.withColumn("id", extract_paper_id_udf(col("path")))
             .withColumn(
                 "chunks", extract_chunks_udf(col("parsed_content"))
             )
             .withColumn("chunk", explode(col("chunks")))
             .select(
-                col("arxiv_id"),
+                col("id"),
                 col("chunk.chunk_id").alias("chunk_id"),
                 clean_chunk_udf(col("chunk.content")).alias("text"),
-                concat_ws("_", col("arxiv_id"), col("chunk.chunk_id")).alias(
+                concat_ws("_", col("id"), col("chunk.chunk_id")).alias(
                     "id"
                 ),
             )
-            .join(metadata_df, "arxiv_id", "left")
+            .join(metadata_df, "id", "left")
         )
 
         # Write to table
-        arxiv_chunks_table = f"{self.catalog}.{self.schema}.arxiv_chunks_table"
-        chunks_df.write.mode("append").saveAsTable(arxiv_chunks_table)
-        logger.info(f"Saved chunks to {arxiv_chunks_table}")
+        global_findex_chunks_table = f"{self.catalog}.{self.schema}.global_findex_chunks_table"
+        chunks_df.write.mode("append").saveAsTable(global_findex_chunks_table)
+        logger.info(f"Saved chunks to {global_findex_chunks_table}")
 
         # Enable Change Data Feed
         self.spark.sql(f"""
-            ALTER TABLE {arxiv_chunks_table}
+            ALTER TABLE {global_findex_chunks_table}
             SET TBLPROPERTIES (delta.enableChangeDataFeed = true)
         """)
-        logger.info(f"Change Data Feed enabled for {arxiv_chunks_table}")
+        logger.info(f"Change Data Feed enabled for {global_findex_chunks_table}")
 
     def process_and_save(self) -> None:
         """
         Complete workflow: download papers, parse PDFs, and process chunks.
         """
-        # Step 1: Download papers and store metadata
-        records = self.download_and_store_papers()
-
-        # Only continue if we have new papers
-        if records is None:
-            logger.info("No new papers to process. Exiting.")
-            return
-
-        # Step 2: Parse PDFs with ai_parse_document
+        # Step 1: Parse PDFs with ai_parse_document
         self.parse_pdfs_with_ai()
         logger.info("Parsed documents.")
 
-        # Step 3: Process chunks
+        # Step 2: Process chunks
         self.process_chunks()
         logger.info("Processing complete!")
