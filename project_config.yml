@@ -5,7 +5,7 @@ dev:
   llm_endpoint: databricks-llama-4-maverick
   embedding_endpoint: databricks-gte-large-en
   warehouse_id: 9c9d5a71fb3773e4
-  vector_search_endpoint: global_findex_vs_endpoint
+  vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
 
 acc:
@@ -15,7 +15,7 @@ acc:
   llm_endpoint: databricks-llama-4-maverick
   embedding_endpoint: databricks-gte-large-en
   warehouse_id: 9c9d5a71fb3773e4
-  vector_search_endpoint: global_findex_vs_endpoint
+  vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
 
 prd:
@@ -25,7 +25,7 @@ prd:
   llm_endpoint: databricks-llama-4-maverick
   embedding_endpoint: databricks-gte-large-en
   warehouse_id: 9c9d5a71fb3773e4
-  vector_search_endpoint: global_findex_vs_endpoint
+  vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
 
 # Model configuration
