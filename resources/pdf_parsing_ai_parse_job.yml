@@ -1,7 +1,7 @@
 resources:
   jobs:
     pdf_parsing_ai_parse_job:
-      name: 2-2-pdf-parsing-ai-parse
+      name: pdf-parsing-ai-parse
       tags:
         project_name: "global-findex-curator"
 
