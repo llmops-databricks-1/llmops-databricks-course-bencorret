@@ -1,4 +1,4 @@
-"""Vector search management for arxiv papers."""
+"""Vector search management for global findex papers."""
 
 from typing import Any
 
@@ -10,7 +10,7 @@ from global_findex_curator.config import ProjectConfig
 
 
 class VectorSearchManager:
-    """Manages vector search endpoints and indexes for arxiv paper chunks."""
+    """Manages vector search endpoints and indexes for global findex paper chunks."""
 
     def __init__(
         self,
@@ -35,7 +35,7 @@ class VectorSearchManager:
         self.usage_policy_id = usage_policy_id
 
         self.client = VectorSearchClient()
-        self.index_name = f"{self.catalog}.{self.schema}.arxiv_index"
+        self.index_name = f"{self.catalog}.{self.schema}.global_findex_index"
 
     def create_endpoint_if_not_exists(self) -> None:
         """Create vector search endpoint if it doesn't exist."""
@@ -63,7 +63,7 @@ class VectorSearchManager:
             Vector search index object
         """
         self.create_endpoint_if_not_exists()
-        source_table = f"{self.catalog}.{self.schema}.arxiv_chunks_table"
+        source_table = f"{self.catalog}.{self.schema}.global_findex_chunks_table"
 
         # Try to get existing index
         try:
@@ -80,7 +80,7 @@ class VectorSearchManager:
                 source_table_name=source_table,
                 index_name=self.index_name,
                 pipeline_type="TRIGGERED",
-                primary_key="id",
+                primary_key="unique_id",
                 embedding_source_column="text",
                 embedding_model_endpoint_name=self.embedding_model,
                 usage_policy_id=self.usage_policy_id
@@ -120,7 +120,7 @@ class VectorSearchManager:
         index = self.client.get_index(index_name=self.index_name)
         results = index.similarity_search(
             query_text=query,
-            columns=["id", "text", "metadata"],
+            columns=["unique_id", "text", "metadata"],
             num_results=num_results,
             filters=filters
         )

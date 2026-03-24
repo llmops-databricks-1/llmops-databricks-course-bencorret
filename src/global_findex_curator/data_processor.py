@@ -200,6 +200,9 @@ class DataProcessor:
                 col("id"),
                 col("chunk.chunk_id").alias("chunk_id"),
                 clean_chunk_udf(col("chunk.content")).alias("text"),
+                concat_ws("_", col("id"), col("chunk.chunk_id")).alias(
+                    "unique_id"
+                ),
             )
             .join(metadata_df, "id", "left")
         )

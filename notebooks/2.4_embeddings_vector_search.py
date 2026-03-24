@@ -17,8 +17,8 @@ from pyspark.sql import SparkSession
 from databricks.vector_search.client import VectorSearchClient
 from databricks.vector_search.reranker import DatabricksReranker
 
-from arxiv_curator.config import load_config, get_env
-from arxiv_curator.vector_search import VectorSearchManager
+from global_findex_curator.config import load_config, get_env
+from global_findex_curator.vector_search import VectorSearchManager
 
 # COMMAND ----------
 
@@ -78,27 +78,27 @@ schema = cfg.schema
 # MAGIC
 # MAGIC ```
 # MAGIC ┌─────────────────────────────────────────┐
-# MAGIC │     Delta Table (arxiv_chunks)          │
-# MAGIC │  - id                                    │
-# MAGIC │  - text                                  │
+# MAGIC │ Delta Table (global_findex_chunks_table)│
+# MAGIC │  - id                                   │
+# MAGIC │  - text                                 │
 # MAGIC │  - metadata (title, author, etc.)       │
 # MAGIC └──────────────┬──────────────────────────┘
 # MAGIC                │
 # MAGIC                │ (Automatic sync)
 # MAGIC                ↓
 # MAGIC ┌─────────────────────────────────────────┐
-# MAGIC │     Vector Search Index                  │
-# MAGIC │  - Embeddings generated automatically    │
-# MAGIC │  - Stored in optimized format            │
-# MAGIC │  - Supports similarity search            │
+# MAGIC │     Vector Search Index                 │
+# MAGIC │  - Embeddings generated automatically   │
+# MAGIC │  - Stored in optimized format           │
+# MAGIC │  - Supports similarity search           │
 # MAGIC └──────────────┬──────────────────────────┘
 # MAGIC                │
 # MAGIC                │ (Query)
 # MAGIC                ↓
 # MAGIC ┌─────────────────────────────────────────┐
-# MAGIC │     Search Results                       │
-# MAGIC │  - Most similar chunks                   │
-# MAGIC │  - With similarity scores                │
+# MAGIC │     Search Results                      │
+# MAGIC │  - Most similar chunks                  │
+# MAGIC │  - With similarity scores               │
 # MAGIC └─────────────────────────────────────────┘
 # MAGIC ```
 
@@ -109,7 +109,7 @@ schema = cfg.schema
 
 # COMMAND ----------
 
-# Using VectorSearchManager from arxiv_curator.vector_search
+# Using VectorSearchManager from global_findex_curator.vector_search
 # This handles endpoint and index creation automatically
 
 vs_manager = VectorSearchManager(
@@ -148,13 +148,13 @@ vs_manager.create_endpoint_if_not_exists()
 # This automatically:
 # - Creates the index if it doesn't exist
 # - Configures it with the embedding model
-# - Sets up delta sync with the arxiv_chunks table
+# - Sets up delta sync with the global_findex_chunks_table table
 
 index = vs_manager.create_or_get_index()
 
 logger.info(f"\n✓ Vector search setup complete!")
 logger.info(f"  Index: {vs_manager.index_name}")
-logger.info(f"  Source: {vs_manager.catalog}.{vs_manager.schema}.arxiv_chunks")
+logger.info(f"  Source: {vs_manager.catalog}.{vs_manager.schema}.global_findex_chunks_table")
 logger.info(f"  Embedding Model: {vs_manager.embedding_model}")
 
 # COMMAND ----------
@@ -223,11 +223,11 @@ def parse_vector_search_results(results):
 # COMMAND ----------
 
 # Simple similarity search
-query = "What are the latest techniques in machine learning?"
+query = "What is the GNI per capita (income measure) in Australia?"
 
 results = index.similarity_search(
     query_text=query,
-    columns=["text", "id", "title", "arxiv_id"],
+    columns=["text", "unique_id", "title", "id"],
     num_results=5
 )
 
@@ -238,8 +238,8 @@ logger.info("=" * 80)
 # Parse results using helper function
 for i, row in enumerate(parse_vector_search_results(results), 1):
     logger.info(f"\n{i}. Paper: {row.get('title', 'N/A')}")
-    logger.info(f"   arXiv ID: {row.get('arxiv_id', 'N/A')}")
-    logger.info(f"   Chunk ID: {row.get('id', 'N/A')}")
+    logger.info(f"   Document ID: {row.get('id', 'N/A')}")
+    logger.info(f"   Chunk ID: {row.get('chunk_id', 'N/A')}")
     logger.info(f"   Text preview: {row.get('text', '')[:200]}...")
     logger.info(f"   Score: {row.get('score', 'N/A'):.4f}")
 
@@ -251,18 +251,18 @@ for i, row in enumerate(parse_vector_search_results(results), 1):
 # COMMAND ----------
 
 # Search with metadata filters
-query = "neural networks and deep learning"
+query = "Adoption of digital merchant payments since 2021"
 
-# Filter for papers from 2024 or later
+# Filter chunks from papers with "Global findex 2025 - Executive report" in the title
 results = index.similarity_search(
     query_text=query,
     columns=["text", "id", "title", "year", "authors"],
-    filters={"year": "2026"},  # Only papers from 2024
+    filters={"title": "Global findex 2025 - Executive report"},  # Exact match filter on title
     num_results=3
 )
 
 logger.info(f"Query: {query}")
-logger.info(f"Filter: year = 2026\n")
+logger.info(f"Filter: title = Global findex 2025 - Executive report\n")
 logger.info("Results:")
 logger.info("=" * 80)
 
@@ -326,7 +326,7 @@ for i, row in enumerate(parse_vector_search_results(results), 1):
 # COMMAND ----------
 
 # Hybrid search example
-query = "transformer architecture attention mechanism"
+query = "Respondent education level"
 
 results = index.similarity_search(
     query_text=query,
@@ -384,7 +384,7 @@ for i, row in enumerate(parse_vector_search_results(results), 1):
 # COMMAND ----------
 
 # Search with reranking
-query = "large language models for code generation"
+query = "Exposure to digital exploitation"
 
 results = index.similarity_search(
     query_text=query,
@@ -414,7 +414,7 @@ for i, row in enumerate(parse_vector_search_results(results), 1):
 # COMMAND ----------
 
 # Compare different search strategies
-query = "attention mechanisms in transformers"
+query = "Borrowers reliance on family or friends"
 
 logger.info(f"Query: {query}\n")
 
