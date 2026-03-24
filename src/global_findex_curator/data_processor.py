@@ -9,17 +9,14 @@ Vector Search Index (embeddings)
 """
 
 import json
-import os
 import re
 import time
 
 from loguru import logger
 from pyspark.sql import SparkSession
-from pyspark.sql import types as T
 from pyspark.sql.functions import (
     col,
     concat_ws,
-    current_timestamp,
     dayofmonth,
     explode,
     month,
@@ -58,7 +55,9 @@ class DataProcessor:
         self.pdf_dir = f"/Volumes/{self.catalog}/{self.schema}/{self.volume}/pdf"
         self.documents_table = f"{self.catalog}.{self.schema}.global_findex_documents"
         self.parsed_table = f"{self.catalog}.{self.schema}.ai_parsed_docs_table"
-        self.global_findex_chunks_table = f"{self.catalog}.{self.schema}.global_findex_chunks_table"
+        self.global_findex_chunks_table = (
+            f"{self.catalog}.{self.schema}.global_findex_chunks_table"
+        )
 
     def parse_pdfs_with_ai(self) -> None:
         """
@@ -89,9 +88,7 @@ class DataProcessor:
             )
         """)
 
-        logger.info(
-            f"Parsed PDFs from {self.pdf_dir} and saved to {self.parsed_table}"
-        )
+        logger.info(f"Parsed PDFs from {self.pdf_dir} and saved to {self.parsed_table}")
 
     @staticmethod
     def _extract_chunks(parsed_content_json: str) -> list[tuple[str, str]]:
@@ -161,9 +158,7 @@ class DataProcessor:
             f"{self.parsed_table} for end date {self.end}"
         )
 
-        df = self.spark.table(self.parsed_table).where(
-            f"processed = {self.end}"
-        )
+        df = self.spark.table(self.parsed_table).where(f"processed = {self.end}")
 
         # Define schema for the extracted chunks
         chunk_schema = ArrayType(
@@ -192,17 +187,13 @@ class DataProcessor:
         # Create the transformed dataframe
         chunks_df = (
             df.withColumn("id", extract_paper_id_udf(col("path")))
-            .withColumn(
-                "chunks", extract_chunks_udf(col("parsed_content"))
-            )
+            .withColumn("chunks", extract_chunks_udf(col("parsed_content")))
             .withColumn("chunk", explode(col("chunks")))
             .select(
                 col("id"),
                 col("chunk.chunk_id").alias("chunk_id"),
                 clean_chunk_udf(col("chunk.content")).alias("text"),
-                concat_ws("_", col("id"), col("chunk.chunk_id")).alias(
-                    "unique_id"
-                ),
+                concat_ws("_", col("id"), col("chunk.chunk_id")).alias("unique_id"),
             )
             .join(metadata_df, "id", "left")
         )

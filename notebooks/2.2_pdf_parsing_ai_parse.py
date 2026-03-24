@@ -9,11 +9,11 @@
 # MAGIC - Storing parsed content in Delta tables
 
 # COMMAND ----------
-#%pip install ../global_findex-0.1.0-py3-none-any.whl
+# %pip install ../global_findex-0.1.0-py3-none-any.whl
 # COMMAND ----------
 
-from loguru import logger
 from databricks.connect import DatabricksSession
+from loguru import logger
 
 from global_findex_curator.config import get_env, load_config
 from global_findex_curator.data_processor import DataProcessor
