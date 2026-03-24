@@ -37,8 +37,8 @@ def define_global_findex_documents():
     """
     documents = [
         {
-            "id": "1",
-            "title": "findex_microdata_2025",
+            "id": "findex_microdata_2025.csv",
+            "title": "Findex microdata 2025 full survey dataset",
             "authors": ["Leora Klapper", "Asli Demirguc-Kunt", "Douglas Randall"],
             "summary": "Raw microdata from the 2025 Global Findex survey. Contains 144,090 individual respondent records with cryptic column names representing survey questions and respondent metadata (country, sex, etc.). Each row is one survey respondent.",
             "published": "2025-01-01 00:00",
@@ -48,11 +48,11 @@ def define_global_findex_documents():
             "primary_category": "Survey data",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/csv/findex_microdata_2025/findex_microdata_2025.csv",
+            "volume_path": f"/Volumes/mlops_{env}/corretco/global_findex_volume/csv/findex_microdata_2025/findex_microdata_2025.csv",
         },
         {
-            "id": "2",
-            "title": "documentation_microdata",
+            "id": "documentation_microdata",
+            "title": "Documentation of microdata survey",
             "authors": ["Leora Klapper", "Asli Demirguc-Kunt", "Douglas Randall"],
             "summary": "PDF documentation for all columns in the microdata database. Each cryptic column name (e.g. 'con31e') is described with its label, the question asked to respondents, and the possible answer values. Required to interpret the microdata CSV.",
             "published": "2025-01-01 00:00",
@@ -62,10 +62,10 @@ def define_global_findex_documents():
             "primary_category": "Data Documentation",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/pdf/documentation_microdata/documentation_microdata.pdf",
+            "volume_path": f"/Volumes/mlops_{env}/corretco/global_findex_volume/pdf/documentation_microdata/documentation_microdata.pdf",
         },
         {
-            "id": "3",
+            "id": "Global_findex_-_The_little_data_book",
             "title": "Global findex - The little data book",
             "authors": ["Leora Klapper", "Asli Demirguc-Kunt", "Douglas Randall"],
             "summary": "A compact PDF presenting aggregated financial inclusion KPIs from the 2025 Global Findex survey, broken down by income category, world region, and individual country. Designed for quick cross-country and cross-region comparisons.",
@@ -76,10 +76,10 @@ def define_global_findex_documents():
             "primary_category": "Financial Inclusion",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/pdf/Global_findex_-_The_little_data_book/Global_findex_-_The_little_data_book.pdf",
+            "volume_path": f"/Volumes/mlops_{env}/corretco/global_findex_volume/pdf/Global_findex_-_The_little_data_book/Global_findex_-_The_little_data_book.pdf",
         },
         {
-            "id": "4",
+            "id": "Global_findex_2025_-_Executive_report",
             "title": "Global findex 2025 - Executive report",
             "authors": ["Leora Klapper", "Asli Demirguc-Kunt", "Douglas Randall"],
             "summary": "A 56-page executive summary of the 2025 Global Findex survey findings. Covers key topics including mobile phone ownership among adults, gender gaps in account ownership, savings per adult, and digital merchant payments. Aimed at a broad audience.",
@@ -90,10 +90,10 @@ def define_global_findex_documents():
             "primary_category": "Financial Inclusion",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/pdf/Global_findex_2025_-_Executive_report/Global_findex_2025_-_Executive_report.pdf",
+            "volume_path": f"/Volumes/mlops_{env}/corretco/global_findex_volume/pdf/Global_findex_2025_-_Executive_report/Global_findex_2025_-_Executive_report.pdf",
         },
         {
-            "id": "5",
+            "id": "Global_findex_database_2025",
             "title": "Global findex database 2025",
             "authors": ["Leora Klapper", "Asli Demirguc-Kunt", "Douglas Randall"],
             "summary": "The full 342-page 2025 Global Findex report. Covers in depth all survey conclusions across major sections: Financial Access, Financial Use, and Financial Health. Intended for researchers and readers seeking deep analysis beyond what the executive report provides.",
@@ -104,11 +104,11 @@ def define_global_findex_documents():
             "primary_category": "Financial Inclusion",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/pdf/Global_findex_database_2025/Global_findex_database_2025.pdf",
+            "volume_path": f"/Volumes/mlops_{env}/corretco/global_findex_volume/pdf/Global_findex_database_2025/Global_findex_database_2025.pdf",
         },
         {
-            "id": "6",
-            "title": "global_findex_database_2025",
+            "id": "global_findex_database_2025.csv",
+            "title": "Global findex 2025 curated dataset",
             "authors": ["Leora Klapper", "Asli Demirguc-Kunt", "Douglas Randall"],
             "summary": "A curated and enriched CSV derived from the microdata database, containing 8,564 records with additional socio-economic headers. Likely a refined subset of the full microdata intended for easier analytical use.",
             "published": "2025-01-01 00:00",
@@ -118,7 +118,7 @@ def define_global_findex_documents():
             "primary_category": "Survey data",
             "ingestion_timestamp": datetime.now().isoformat(),
             "processed": None,
-            "volume_path": f"/Volumes/llmops_{env}/global_findex/global_findex_files/csv/Global_findex_database_2025/Global_findex_database_2025.csv",
+            "volume_path": f"/Volumes/mlops_{env}/corretco/global_findex_volume/csv/Global_findex_database_2025/Global_findex_database_2025.csv",
         },
     ]
 

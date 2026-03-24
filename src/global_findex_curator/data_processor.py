@@ -20,8 +20,12 @@ from pyspark.sql.functions import (
     col,
     concat_ws,
     current_timestamp,
+    dayofmonth,
     explode,
+    month,
+    to_date,
     udf,
+    year,
 )
 from pyspark.sql.types import ArrayType, StringType, StructField, StructType
 
@@ -52,9 +56,9 @@ class DataProcessor:
 
         self.end = time.strftime("%Y%m%d%H%M", time.gmtime())
         self.pdf_dir = f"/Volumes/{self.catalog}/{self.schema}/{self.volume}/pdf"
-        os.makedirs(self.pdf_dir, exist_ok=True)
         self.documents_table = f"{self.catalog}.{self.schema}.global_findex_documents"
         self.parsed_table = f"{self.catalog}.{self.schema}.ai_parsed_docs_table"
+        self.global_findex_chunks_table = f"{self.catalog}.{self.schema}.global_findex_chunks_table"
 
     def parse_pdfs_with_ai(self) -> None:
         """
@@ -70,8 +74,11 @@ class DataProcessor:
             )
         """)
 
+        # We do not add new PDF documents in this project, just use a static list
+        # So we need to clear any exitsting data
+        # Hence the OVERWRITE mode
         self.spark.sql(f"""
-            INSERT INTO {self.parsed_table}
+            INSERT OVERWRITE {self.parsed_table}
             SELECT
                 path,
                 ai_parse_document(content) AS parsed_content,
@@ -177,9 +184,9 @@ class DataProcessor:
             col("title"),
             col("summary"),
             concat_ws(", ", col("authors")).alias("authors"),
-            (col("published") / 100000000).cast("int").alias("year"),
-            ((col("published") % 100000000) / 1000000).cast("int").alias("month"),
-            ((col("published") % 1000000) / 10000).cast("int").alias("day"),
+            year(to_date(col("published"), "yyyy-MM-dd HH:mm")).alias("year"),
+            month(to_date(col("published"), "yyyy-MM-dd HH:mm")).alias("month"),
+            dayofmonth(to_date(col("published"), "yyyy-MM-dd HH:mm")).alias("day"),
         )
 
         # Create the transformed dataframe
@@ -193,24 +200,20 @@ class DataProcessor:
                 col("id"),
                 col("chunk.chunk_id").alias("chunk_id"),
                 clean_chunk_udf(col("chunk.content")).alias("text"),
-                concat_ws("_", col("id"), col("chunk.chunk_id")).alias(
-                    "id"
-                ),
             )
             .join(metadata_df, "id", "left")
         )
 
         # Write to table
-        global_findex_chunks_table = f"{self.catalog}.{self.schema}.global_findex_chunks_table"
-        chunks_df.write.mode("append").saveAsTable(global_findex_chunks_table)
-        logger.info(f"Saved chunks to {global_findex_chunks_table}")
+        chunks_df.write.mode("overwrite").saveAsTable(self.global_findex_chunks_table)
+        logger.info(f"Saved chunks to {self.global_findex_chunks_table}")
 
         # Enable Change Data Feed
         self.spark.sql(f"""
-            ALTER TABLE {global_findex_chunks_table}
+            ALTER TABLE {self.global_findex_chunks_table}
             SET TBLPROPERTIES (delta.enableChangeDataFeed = true)
         """)
-        logger.info(f"Change Data Feed enabled for {global_findex_chunks_table}")
+        logger.info(f"Change Data Feed enabled for {self.global_findex_chunks_table}")
 
     def process_and_save(self) -> None:
         """
