@@ -1,30 +1,30 @@
 dev:
-  catalog: llmops_dev
-  schema: golbal_findex
-  volume: globa_findex_files
+  catalog: mlops_dev
+  schema: corretco
+  volume: global_findex_volume
   llm_endpoint: databricks-llama-4-maverick
   embedding_endpoint: databricks-gte-large-en
-  warehouse_id: f6de440a1a1cec62
+  warehouse_id: 9c9d5a71fb3773e4
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
 
 acc:
-  catalog: llmops_acc
-  schema: golbal_findex
-  volume: globa_findex_files
+  catalog: mlops_acc
+  schema: corretco
+  volume: global_findex_volume
   llm_endpoint: databricks-llama-4-maverick
   embedding_endpoint: databricks-gte-large-en
-  warehouse_id: f6de440a1a1cec62
+  warehouse_id: 9c9d5a71fb3773e4
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
 
 prd:
-  catalog: llmops_prd
-  schema: golbal_findex
-  volume: globa_findex_files
+  catalog: mlops_prd
+  schema: corretco
+  volume: global_findex_volume
   llm_endpoint: databricks-llama-4-maverick
   embedding_endpoint: databricks-gte-large-en
-  warehouse_id: f6de440a1a1cec62
+  warehouse_id: 9c9d5a71fb3773e4
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
 
