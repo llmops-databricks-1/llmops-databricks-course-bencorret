@@ -5,20 +5,20 @@ from databricks.sdk.service.database import DatabaseInstance, DatabaseInstanceSt
 from uuid import uuid4
 from loguru import logger
 
-from arxiv_curator.memory import LakebaseMemory
-from arxiv_curator.config import load_config, get_env
+from global_findex_curator.memory import LakebaseMemory
+from global_findex_curator.config import load_config, get_env
 
 
-scope_name = "arxiv-agent-scope"
+scope_name = "global-findex-agent-scope"
 os.environ["DATABRICKS_CLIENT_ID"] = dbutils.secrets.get(scope_name, "client_id")
 os.environ["DATABRICKS_CLIENT_SECRET"] = dbutils.secrets.get(scope_name, "client_secret")
- 
+
 
 w = WorkspaceClient()
 os.environ["DATABRICKS_HOST"] = w.config.host
 
 # COMMAND ----------
-instance_name = "arxiv-agent-instance"
+instance_name = "global-findex-agent-instance"
 instance = w.database.get_database_instance(instance_name)
 lakebase_host = instance.read_write_dns
 
@@ -34,9 +34,9 @@ session_id = f"test-session-{uuid4()}"
 
 # Save some messages
 test_messages = [
-    {"role": "user", "content": "What are recent papers on transformers?"},
-    {"role": "assistant", "content": "Here are some recent papers on transformer architectures..."},
-    {"role": "user", "content": "Tell me more about the first one"},
+    {"role": "user", "content": "What does the Global Findex report say about financial inclusion?"},
+    {"role": "assistant", "content": "The Global Findex report shows that account ownership has grown significantly..."},
+    {"role": "user", "content": "Tell me more about trends in Sub-Saharan Africa"},
 ]
 
 memory.save_messages(session_id, test_messages)

@@ -9,7 +9,7 @@
 
 # COMMAND ----------
 
-from arxiv_curator.config import load_config, get_env
+from global_findex_curator.config import load_config, get_env
 from pyspark.sql import SparkSession
 
 spark = SparkSession.builder.getOrCreate()

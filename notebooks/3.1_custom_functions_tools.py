@@ -204,7 +204,7 @@ def search_findex_reports(query: str, num_results: int = 5) -> str:
     # Build search parameters
     search_params = {
         "query_text": query,
-        "columns": ["unique_id", "text", "metadata"],
+        "columns": ["unique_id", "text", "summary"],
         "num_results": num_results,
         "query_type": "hybrid"
     }
@@ -217,7 +217,7 @@ def search_findex_reports(query: str, num_results: int = 5) -> str:
     for row in parse_vector_search_results(results):
         documents.append({
             "unique_id": row.get("unique_id", "N/A"),
-            "metadata": str(row.get("metadata", "N/A")),
+            "summary": str(row.get("summary", "N/A")),
             "excerpt": row.get("text", "")[:200] + "..."
         })
 

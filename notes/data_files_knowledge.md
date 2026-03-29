@@ -22,12 +22,12 @@ This field is detailed 2 times in this PDF document.
 
 This PDF document must be used to interpret the data present in the microdata database
 
-### Global findex - The little data book.pdf
+### Global_findex_-_The_little_data_book.pdf
 This file is a PDF document. It contains a list of tables with a few KPIs on financial inclusion, presented over income categories, region and finally all countries.
 
 This PDF is based on the microdata database. It aggregates data from the microdata database to present KPIs at income category levels, or country level ... The information present in this document is a summary for survey readers who want to make quick comparisons between region, countries, country within a region etc.
 
-### Global findex 2025 - Executive report.pdf
+### Global_findex_2025_-_Executive_report.pdf
 This PDF document contains a detailed summary of the findings of the Global Findex Survey. The data present in the microdata database was used to produce conclusion on financial inclusion topics. Among these topics are:
 - Adults owning a mobile phone
 - Gender gaps in account ownership
@@ -35,7 +35,7 @@ This PDF document contains a detailed summary of the findings of the Global Find
 - Digital merchant payments
 This document is only 56 pages long, which makes it a lot easier to read for the great public.
 
-### Global findex database 2025.pdf
+### Global_findex_database_2025.pdf
 This is the full report. It is 342 pages long. It contains all the conclusions from the survey. It is broken down in several sections, each covering global topics like Financial access, Financial use, Financial health ...
 
 This document can be read by researchers or any individual wanting to deepen in a sepcific topic. The Executive report will not go deep enough on certain topics. But this PDF document will.

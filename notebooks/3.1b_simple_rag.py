@@ -76,14 +76,14 @@ def retrieve_documents(query: str, num_results: int = 5) -> list[dict]:
         num_results: Number of documents to retrieve
 
     Returns:
-        List of document dictionaries with unique_id, text, and metadata
+        List of document dictionaries with unique_id, text, and summary
     """
     index_name = f"{cfg.catalog}.{cfg.schema}.global_findex_index"
     index = vsc.get_index(index_name=index_name)
 
     results = index.similarity_search(
         query_text=query,
-        columns=["unique_id", "text", "metadata"],
+        columns=["unique_id", "text", "summary"],
         num_results=num_results,
         query_type="hybrid"
     )
@@ -96,7 +96,7 @@ def retrieve_documents(query: str, num_results: int = 5) -> list[dict]:
             documents.append({
                 "unique_id": row[0],
                 "text": row[1],
-                "metadata": row[2],
+                "summary": row[2],
             })
 
     return documents
@@ -110,7 +110,7 @@ docs = retrieve_documents(query, num_results=3)
 logger.info(f"Retrieved {len(docs)} documents for query: '{query}'")
 for i, doc in enumerate(docs, 1):
     logger.info(f"\n{i}. ID: {doc['unique_id']}")
-    logger.info(f"   Metadata: {str(doc['metadata'])[:100]}")
+    logger.info(f"   summary: {str(doc['summary'])[:100]}")
     logger.info(f"   Text preview: {doc['text'][:150]}...")
 
 # COMMAND ----------
@@ -137,7 +137,7 @@ def build_rag_prompt(question: str, documents: list[dict]) -> str:
     for i, doc in enumerate(documents, 1):
         context_parts.append(f"""
 Document {i} (ID: {doc['unique_id']})
-Metadata: {doc['metadata']}
+summary: {doc['summary']}
 Content: {doc['text']}
 """)
 
@@ -213,7 +213,7 @@ def rag_query(question: str, num_docs: int = 5) -> dict:
         "question": question,
         "answer": answer,
         "sources": [
-            {"unique_id": doc["unique_id"], "metadata": doc["metadata"]}
+            {"unique_id": doc["unique_id"], "summary": doc["summary"]}
             for doc in documents
         ]
     }
@@ -234,7 +234,7 @@ logger.info("=" * 80)
 logger.info(f"\nAnswer:\n{result['answer']}")
 logger.info("\nSources:")
 for src in result['sources']:
-    logger.info(f"  - {src['unique_id']} | {str(src['metadata'])[:80]}")
+    logger.info(f"  - {src['unique_id']} | {str(src['summary'])[:80]}")
 
 # COMMAND ----------
 
@@ -247,7 +247,7 @@ logger.info("=" * 80)
 logger.info(f"\nAnswer:\n{result2['answer']}")
 logger.info("\nSources:")
 for src in result2['sources']:
-    logger.info(f"  - {src['unique_id']} | {str(src['metadata'])[:80]}")
+    logger.info(f"  - {src['unique_id']} | {str(src['summary'])[:80]}")
 
 # COMMAND ----------
 
@@ -282,7 +282,7 @@ class SimpleRAG:
         index = self.vsc.get_index(index_name=self.index_name)
         results = index.similarity_search(
             query_text=query,
-            columns=["unique_id", "text", "metadata"],
+            columns=["unique_id", "text", "summary"],
             num_results=num_results,
             query_type="hybrid"
         )
@@ -293,7 +293,7 @@ class SimpleRAG:
                 documents.append({
                     "unique_id": row[0],
                     "text": row[1],
-                    "metadata": row[2],
+                    "summary": row[2],
                 })
         return documents
 

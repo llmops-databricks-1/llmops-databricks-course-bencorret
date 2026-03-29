@@ -17,7 +17,7 @@
 # COMMAND ----------
 from pyspark.sql import SparkSession
 
-from arxiv_curator.config import load_config, get_env
+from global_findex_curator.config import load_config, get_env
 
 spark = SparkSession.builder.getOrCreate()
 
@@ -68,14 +68,14 @@ else:
 if not USE_EXISTING_SPACE:
     # Create a new warehouse for the Genie space
     created = w.warehouses.create(
-        name="__2XS_arxiv_warehouse",
+        name="__2XS_global_findex_warehouse",
         cluster_size="2X-Small",
         max_num_clusters=1,
         auto_stop_mins=10,
         warehouse_type=CreateWarehouseRequestWarehouseType("PRO"),
         enable_serverless_compute=True,
         tags=sql.EndpointTags(
-            custom_tags=[sql.EndpointTagPair(key="Project", value="arxiv_curator")]
+            custom_tags=[sql.EndpointTagPair(key="Project", value="global_findex_curator")]
         ),
     ).result()
     warehouse_id = created.id
@@ -95,19 +95,19 @@ else:
 
 # COMMAND ----------
 
-# Configure the Genie space with arxiv_papers table
+# Configure the Genie space with global_findex_documents table
 serialized_space = {
     "version": 1,
     "data_sources": {
         "tables": [
             {
-                "identifier": f"{catalog}.{schema}.arxiv_papers",
+                "identifier": f"{catalog}.{schema}.global_findex_documents",
                 "column_configs": [
                     {"column_name": "authors"},
-                    {"column_name": "ingest_ts", "get_example_values": True},
-                    {"column_name": "paper_id", "get_example_values": True},
+                    {"column_name": "ingestion_timestamp", "get_example_values": True},
+                    {"column_name": "id", "get_example_values": True},
                     {
-                        "column_name": "pdf_url",
+                        "column_name": "document_type",
                         "get_example_values": True,
                         "build_value_dictionary": True,
                     },
@@ -138,7 +138,7 @@ if not USE_EXISTING_SPACE:
     space = w.genie.create_space(
         warehouse_id=warehouse_id,
         serialized_space=json.dumps(serialized_space),
-        title="arxiv-curator-space",
+        title="global-findex-space",
     )
     space_id = space.space_id
     logger.info(f"Created new Genie Space: {space_id}")
@@ -167,7 +167,7 @@ logger.info(f"Space config: {json.loads(space.serialized_space)}")
 
 conversation = w.genie.start_conversation_and_wait(
     space_id=space.space_id,
-    content="Find the last 10 papers published")
+    content="Find the last 10 Global Findex reports published")
 
 conversation.as_dict()
 
@@ -183,7 +183,7 @@ conversation.as_dict()
 message = w.genie.create_message_and_wait(
     space_id=space.space_id,
     conversation_id=conversation.conversation_id,
-    content="Return the list of authors of the last 10 papers published")
+    content="What document types are represented among the last 10 reports published?")
 
 message.as_dict()
 

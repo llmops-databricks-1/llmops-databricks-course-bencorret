@@ -28,7 +28,7 @@ admin_client_secret = dbutils.secrets.get("admin1", "client_secret")
 account_id = dbutils.secrets.get("admin1", "account_id")
 
 account_host = "https://accounts.cloud.databricks.com"
-instance_name = "arxiv-agent-instance"
+instance_name = "global-findex-agent-instance"
 
 # Get account-level token
 token = requests.post(
@@ -38,7 +38,7 @@ token = requests.post(
 ).json()["access_token"]
 
 # Step 1: Create service principal + OAuth secret
-sp = w.service_principals.create(display_name="lakebase-sp-arxiv")
+sp = w.service_principals.create(display_name="lakebase-sp-global-findex")
 secret_resp = requests.post(
     f"{account_host}/api/2.0/accounts/{account_id}/servicePrincipals/{sp.id}/credentials/secrets",
     headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
@@ -48,7 +48,7 @@ client_id = sp.application_id
 client_secret = secret_resp.json()["secret"]
 
 # Step 2: Store credentials in a secret scope
-scope_name = "arxiv-agent-scope"
+scope_name = "global-findex-agent-scope"
 try:
     w.secrets.create_scope(scope=scope_name)
 except Exception:
@@ -66,7 +66,7 @@ requests.patch(
                                    "permission_level": "CAN_USE"}]}
 ).raise_for_status()
 
-# Step 4: Postgres role SQL — run in Lakebase SQL Editor for 'arxiv-agent-instance'
+# Step 4: Postgres role SQL — run in Lakebase SQL Editor for 'global-findex-agent-instance'
 lakebase_role_sql = f"""
 CREATE EXTENSION IF NOT EXISTS databricks_auth;
 SELECT databricks_create_role('{client_id}', 'SERVICE_PRINCIPAL');

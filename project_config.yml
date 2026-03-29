@@ -6,7 +6,8 @@ dev:
   embedding_endpoint: databricks-gte-large-en
   warehouse_id: 9c9d5a71fb3773e4
   vector_search_endpoint: llmops_course_vs_endpoint
-  genie_space_id: null
+  genie_space_id: "01f12b4f1c881997a13d98811a9617ca"
+  usage_policy_id: 686c435d-90af-4c40-9ca4-442d4a3d8899
 
 acc:
   catalog: mlops_acc
@@ -17,6 +18,7 @@ acc:
   warehouse_id: 9c9d5a71fb3773e4
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
+  usage_policy_id: 686c435d-90af-4c40-9ca4-442d4a3d8899
 
 prd:
   catalog: mlops_prd
@@ -27,6 +29,7 @@ prd:
   warehouse_id: 9c9d5a71fb3773e4
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
+  usage_policy_id: 686c435d-90af-4c40-9ca4-442d4a3d8899
 
 # Model configuration
 model_config:

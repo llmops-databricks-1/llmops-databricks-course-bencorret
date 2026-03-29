@@ -15,8 +15,8 @@ from databricks.sdk.service.database import DatabaseInstance, DatabaseInstanceSt
 from uuid import uuid4
 from loguru import logger
 
-from arxiv_curator.memory import LakebaseMemory
-from arxiv_curator.config import load_config, get_env
+from global_findex_curator.memory import LakebaseMemory
+from global_findex_curator.config import load_config, get_env
 
 # COMMAND ----------
 
@@ -34,7 +34,7 @@ from arxiv_curator.config import load_config, get_env
 w = WorkspaceClient()
 cfg = load_config("../project_config.yml")
 
-instance_name = "arxiv-agent-instance"
+instance_name = "global-findex-agent-instance"
 
 usage_policy_id = cfg.usage_policy_id  # TODO: replace with your usage policy ID
 
@@ -102,9 +102,9 @@ session_id = f"test-session-{uuid4()}"
 
 # Save some messages
 test_messages = [
-    {"role": "user", "content": "What are recent papers on transformers?"},
-    {"role": "assistant", "content": "Here are some recent papers on transformer architectures..."},
-    {"role": "user", "content": "Tell me more about the first one"},
+    {"role": "user", "content": "What does the Global Findex report say about financial inclusion?"},
+    {"role": "assistant", "content": "The Global Findex report shows that account ownership has grown significantly..."},
+    {"role": "user", "content": "Tell me more about trends in Sub-Saharan Africa"},
 ]
 
 memory.save_messages(session_id, test_messages)
@@ -133,19 +133,19 @@ conversation_id = f"conversation-{uuid4()}"
 
 # Turn 1
 turn1_messages = [
-    {"role": "user", "content": "I'm interested in LLM evaluation metrics"}
+    {"role": "user", "content": "I'm interested in the gender gap in financial inclusion"}
 ]
 memory.save_messages(conversation_id, turn1_messages)
 
 # Simulate agent response
 turn1_response = [
-    {"role": "assistant", "content": "Common LLM evaluation metrics include BLEU, ROUGE, and BERTScore..."}
+    {"role": "assistant", "content": "The Global Findex data shows a persistent gender gap in account ownership across many regions..."}
 ]
 memory.save_messages(conversation_id, turn1_response)
 
 # Turn 2 - reference to previous context
 turn2_messages = [
-    {"role": "user", "content": "Which one is best for summarization?"}
+    {"role": "user", "content": "Which regions show the largest gap?"}
 ]
 memory.save_messages(conversation_id, turn2_messages)
 
@@ -166,7 +166,7 @@ for msg in full_conversation:
 # COMMAND ----------
 
 from openai import OpenAI
-from arxiv_curator.config import load_config, get_env
+from global_findex_curator.config import load_config, get_env
 from pyspark.sql import SparkSession
 
 spark = SparkSession.builder.getOrCreate()
@@ -183,28 +183,28 @@ def chat_with_memory(session_id: str, user_message: str, memory: LakebaseMemory)
     """Chat with LLM using session memory for context."""
     # Load previous messages
     previous_messages = memory.load_messages(session_id)
-    
+
     # Build messages with system prompt
     messages = [
-        {"role": "system", "content": "You are a helpful research assistant."}
+        {"role": "system", "content": "You are a helpful assistant specializing in global financial inclusion data from the World Bank Global Findex reports."}
     ] + previous_messages + [
         {"role": "user", "content": user_message}
     ]
-    
+
     # Call LLM
     response = client.chat.completions.create(
         model=cfg.llm_endpoint,
         messages=messages,
     )
-    
+
     assistant_response = response.choices[0].message.content
-    
+
     # Save new messages to memory
     memory.save_messages(session_id, [
         {"role": "user", "content": user_message},
         {"role": "assistant", "content": assistant_response},
     ])
-    
+
     return assistant_response
 
 logger.info("✓ Chat function with memory created")
@@ -215,13 +215,13 @@ logger.info("✓ Chat function with memory created")
 agent_session_id = f"agent-session-{uuid4()}"
 
 # First query
-response1 = chat_with_memory(agent_session_id, "What is RAG in the context of LLMs?", memory)
+response1 = chat_with_memory(agent_session_id, "What is the Global Findex database and what does it measure?", memory)
 logger.info(f"Response 1: {response1[:200]}...")
 
 # COMMAND ----------
 
 # Follow-up query with context (memory is automatically loaded)
-response2 = chat_with_memory(agent_session_id, "What are the main components?", memory)
+response2 = chat_with_memory(agent_session_id, "How often is this data collected and how many countries does it cover?", memory)
 logger.info(f"Response 2: {response2[:200]}...")
 
 # COMMAND ----------
