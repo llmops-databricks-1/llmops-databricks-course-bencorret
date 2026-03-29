@@ -29,7 +29,7 @@ from databricks.vector_search.client import VectorSearchClient
 from openai import OpenAI
 from loguru import logger
 
-from arxiv_curator.config import load_config, get_env
+from global_findex_curator.config import load_config, get_env
 
 # COMMAND ----------
 
@@ -70,49 +70,47 @@ logger.info(f"✓ Using LLM endpoint: {cfg.llm_endpoint}")
 
 def retrieve_documents(query: str, num_results: int = 5) -> list[dict]:
     """Retrieve relevant documents from vector search.
-    
+
     Args:
         query: The search query
         num_results: Number of documents to retrieve
-        
+
     Returns:
-        List of document dictionaries with title, text, and metadata
+        List of document dictionaries with unique_id, text, and metadata
     """
-    index_name = f"{cfg.catalog}.{cfg.schema}.arxiv_index"
+    index_name = f"{cfg.catalog}.{cfg.schema}.global_findex_index"
     index = vsc.get_index(index_name=index_name)
-    
+
     results = index.similarity_search(
         query_text=query,
-        columns=["text", "title", "arxiv_id", "authors", "year"],
+        columns=["unique_id", "text", "metadata"],
         num_results=num_results,
         query_type="hybrid"
     )
-    
+
     # Parse results
     documents = []
     if results and "result" in results:
         data_array = results["result"].get("data_array", [])
         for row in data_array:
             documents.append({
-                "text": row[0],
-                "title": row[1],
-                "arxiv_id": row[2],
-                "authors": row[3],
-                "year": row[4],
+                "unique_id": row[0],
+                "text": row[1],
+                "metadata": row[2],
             })
-    
+
     return documents
 
 # COMMAND ----------
 
 # Test retrieval
-query = "transformer attention mechanisms"
+query = "account ownership low-income countries"
 docs = retrieve_documents(query, num_results=3)
 
 logger.info(f"Retrieved {len(docs)} documents for query: '{query}'")
 for i, doc in enumerate(docs, 1):
-    logger.info(f"\n{i}. {doc['title']}")
-    logger.info(f"   ArXiv ID: {doc['arxiv_id']}")
+    logger.info(f"\n{i}. ID: {doc['unique_id']}")
+    logger.info(f"   Metadata: {str(doc['metadata'])[:100]}")
     logger.info(f"   Text preview: {doc['text'][:150]}...")
 
 # COMMAND ----------
@@ -126,11 +124,11 @@ for i, doc in enumerate(docs, 1):
 
 def build_rag_prompt(question: str, documents: list[dict]) -> str:
     """Build a prompt with retrieved context.
-    
+
     Args:
         question: The user's question
         documents: List of retrieved documents
-        
+
     Returns:
         Formatted prompt string
     """
@@ -138,14 +136,14 @@ def build_rag_prompt(question: str, documents: list[dict]) -> str:
     context_parts = []
     for i, doc in enumerate(documents, 1):
         context_parts.append(f"""
-Document {i}: {doc['title']}
-ArXiv ID: {doc['arxiv_id']}
+Document {i} (ID: {doc['unique_id']})
+Metadata: {doc['metadata']}
 Content: {doc['text']}
 """)
-    
+
     context = "\n---\n".join(context_parts)
-    
-    prompt = f"""You are a helpful research assistant. Answer the question based on the provided context from research papers.
+
+    prompt = f"""You are a helpful assistant specializing in global financial inclusion data. Answer the question based on the provided context from Global Findex reports.
 
 CONTEXT:
 {context}
@@ -155,17 +153,17 @@ QUESTION: {question}
 INSTRUCTIONS:
 - Answer based on the provided context
 - If the context doesn't contain enough information, say so
-- Cite the relevant paper titles when making claims
+- Reference the relevant document metadata when making claims
 - Be concise but thorough
 
 ANSWER:"""
-    
+
     return prompt
 
 # COMMAND ----------
 
 # Test prompt building
-test_prompt = build_rag_prompt("What is attention in transformers?", docs)
+test_prompt = build_rag_prompt("What is the global account ownership rate?", docs)
 logger.info("Built RAG prompt:")
 logger.info(f"Prompt length: {len(test_prompt)} characters")
 logger.info(f"Preview:\n{test_prompt[:500]}...")
@@ -181,11 +179,11 @@ logger.info(f"Preview:\n{test_prompt[:500]}...")
 
 def rag_query(question: str, num_docs: int = 5) -> dict:
     """Answer a question using RAG.
-    
+
     Args:
         question: The user's question
         num_docs: Number of documents to retrieve
-        
+
     Returns:
         Dictionary with answer and sources
     """
@@ -193,10 +191,10 @@ def rag_query(question: str, num_docs: int = 5) -> dict:
     logger.info(f"Retrieving documents for: '{question}'")
     documents = retrieve_documents(question, num_results=num_docs)
     logger.info(f"Retrieved {len(documents)} documents")
-    
+
     # Step 2: Build prompt with context
     prompt = build_rag_prompt(question, documents)
-    
+
     # Step 3: Generate answer with LLM
     logger.info("Generating answer...")
     response = client.chat.completions.create(
@@ -207,15 +205,15 @@ def rag_query(question: str, num_docs: int = 5) -> dict:
         max_tokens=1000,
         temperature=0.7,
     )
-    
+
     answer = response.choices[0].message.content
-    
+
     # Return answer with sources
     return {
         "question": question,
         "answer": answer,
         "sources": [
-            {"title": doc["title"], "arxiv_id": doc["arxiv_id"]}
+            {"unique_id": doc["unique_id"], "metadata": doc["metadata"]}
             for doc in documents
         ]
     }
@@ -227,8 +225,8 @@ def rag_query(question: str, num_docs: int = 5) -> dict:
 
 # COMMAND ----------
 
-# Test with a research question
-result = rag_query("What are the key innovations in transformer architectures?")
+# Test with a financial inclusion question
+result = rag_query("What are the main barriers to financial inclusion in developing countries?")
 
 logger.info("=" * 80)
 logger.info(f"Question: {result['question']}")
@@ -236,12 +234,12 @@ logger.info("=" * 80)
 logger.info(f"\nAnswer:\n{result['answer']}")
 logger.info("\nSources:")
 for src in result['sources']:
-    logger.info(f"  - {src['title']} ({src['arxiv_id']})")
+    logger.info(f"  - {src['unique_id']} | {str(src['metadata'])[:80]}")
 
 # COMMAND ----------
 
 # Test with another question
-result2 = rag_query("How do large language models handle reasoning tasks?")
+result2 = rag_query("How has mobile money adoption changed access to financial services?")
 
 logger.info("=" * 80)
 logger.info(f"Question: {result2['question']}")
@@ -249,7 +247,7 @@ logger.info("=" * 80)
 logger.info(f"\nAnswer:\n{result2['answer']}")
 logger.info("\nSources:")
 for src in result2['sources']:
-    logger.info(f"  - {src['title']} ({src['arxiv_id']})")
+    logger.info(f"  - {src['unique_id']} | {str(src['metadata'])[:80]}")
 
 # COMMAND ----------
 
@@ -262,12 +260,12 @@ for src in result2['sources']:
 
 class SimpleRAG:
     """Simple RAG system with conversation history."""
-    
+
     def __init__(self, llm_endpoint: str, index_name: str):
         self.llm_endpoint = llm_endpoint
         self.index_name = index_name
         self.conversation_history = []
-        
+
         # Initialize clients
         self.w = WorkspaceClient()
         self.client = OpenAI(
@@ -278,66 +276,66 @@ class SimpleRAG:
             workspace_url=self.w.config.host,
             personal_access_token=self.w.tokens.create(lifetime_seconds=1200).token_value,
         )
-    
+
     def retrieve(self, query: str, num_results: int = 5) -> list[dict]:
         """Retrieve relevant documents."""
         index = self.vsc.get_index(index_name=self.index_name)
         results = index.similarity_search(
             query_text=query,
-            columns=["text", "title", "arxiv_id"],
+            columns=["unique_id", "text", "metadata"],
             num_results=num_results,
             query_type="hybrid"
         )
-        
+
         documents = []
         if results and "result" in results:
             for row in results["result"].get("data_array", []):
                 documents.append({
-                    "text": row[0],
-                    "title": row[1],
-                    "arxiv_id": row[2],
+                    "unique_id": row[0],
+                    "text": row[1],
+                    "metadata": row[2],
                 })
         return documents
-    
+
     def chat(self, question: str, num_docs: int = 3) -> str:
         """Chat with RAG, maintaining conversation history."""
         # Retrieve documents
         documents = self.retrieve(question, num_results=num_docs)
-        
+
         # Build context
         context = "\n\n".join([
-            f"[{doc['title']}]: {doc['text']}"
+            f"[{doc['unique_id']}]: {doc['text']}"
             for doc in documents
         ])
-        
+
         # Build system message with context
-        system_message = f"""You are a helpful research assistant. Use the following context from research papers to answer questions.
+        system_message = f"""You are a helpful assistant specializing in global financial inclusion data. Use the following context from Global Findex reports to answer questions.
 
 CONTEXT:
 {context}
 
-If the context doesn't contain relevant information, say so. Always cite paper titles when making claims."""
-        
+If the context doesn't contain relevant information, say so. Always reference the document ID when making claims."""
+
         # Add user message to history
         self.conversation_history.append({"role": "user", "content": question})
-        
+
         # Build messages for LLM
         messages = [{"role": "system", "content": system_message}] + self.conversation_history
-        
+
         # Generate response
         response = self.client.chat.completions.create(
             model=self.llm_endpoint,
             messages=messages,
             max_tokens=1000,
         )
-        
+
         answer = response.choices[0].message.content
-        
+
         # Add assistant response to history
         self.conversation_history.append({"role": "assistant", "content": answer})
-        
+
         return answer
-    
+
     def clear_history(self):
         """Clear conversation history."""
         self.conversation_history = []
@@ -345,7 +343,7 @@ If the context doesn't contain relevant information, say so. Always cite paper t
 # COMMAND ----------
 
 # Create RAG instance
-index_name = f"{cfg.catalog}.{cfg.schema}.arxiv_index"
+index_name = f"{cfg.catalog}.{cfg.schema}.global_findex_index"
 rag = SimpleRAG(llm_endpoint=cfg.llm_endpoint, index_name=index_name)
 
 logger.info("✓ SimpleRAG initialized")
@@ -357,7 +355,7 @@ logger.info("Starting multi-turn RAG conversation...")
 logger.info("=" * 80)
 
 # First question
-q1 = "What is attention in neural networks?"
+q1 = "What share of adults worldwide have a bank account?"
 a1 = rag.chat(q1)
 logger.info(f"Q: {q1}")
 logger.info(f"A: {a1}\n")
@@ -365,7 +363,7 @@ logger.info(f"A: {a1}\n")
 # COMMAND ----------
 
 # Follow-up question (uses conversation history)
-q2 = "How does self-attention differ from cross-attention?"
+q2 = "How does this differ between men and women?"
 a2 = rag.chat(q2)
 logger.info(f"Q: {q2}")
 logger.info(f"A: {a2}\n")
@@ -373,7 +371,7 @@ logger.info(f"A: {a2}\n")
 # COMMAND ----------
 
 # Another follow-up
-q3 = "What are the computational costs?"
+q3 = "What policies are recommended to close this gap?"
 a3 = rag.chat(q3)
 logger.info(f"Q: {q3}")
 logger.info(f"A: {a3}")

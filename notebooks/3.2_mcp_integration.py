@@ -20,8 +20,8 @@ import nest_asyncio
 from loguru import logger
 from pyspark.sql import SparkSession
 
-from arxiv_curator.config import load_config, get_env
-from arxiv_curator.mcp import create_mcp_tools
+from global_findex_curator.config import load_config, get_env
+from global_findex_curator.mcp import create_mcp_tools
 
 # Enable nested event loops (required for Databricks notebooks)
 nest_asyncio.apply()
@@ -144,20 +144,20 @@ for tool in vs_tools:
 # MAGIC ### Call Vector Search Tool
 # MAGIC
 # MAGIC **Important**: The MCP tool name uses double underscores:
-# MAGIC - Tool name: `workspace__course_data__arxiv_index`
+# MAGIC - Tool name: `mlops_dev__corretco__global_findex_index`
 # MAGIC - Parameter: `query` (just the search query text)
 # MAGIC - The index is already specified in the tool name itself
 
 # COMMAND ----------
 
-# Search for papers about machine learning
+# Search for Global Findex content about financial inclusion
 # The tool name is the index name with '__' separators
-tool_name = f"{cfg.catalog}__{cfg.schema}__arxiv_index"
+tool_name = f"{cfg.catalog}__{cfg.schema}__global_findex_index"
 
 search_result = vs_mcp_client.call_tool(
     tool_name,
     {
-        "query": "machine learning and neural networks"
+        "query": "financial inclusion mobile banking"
     }
 )
 
@@ -212,7 +212,7 @@ else:
 # MAGIC %md
 # MAGIC ## 6. Creating MCP Tools for Agents
 # MAGIC
-# MAGIC **Using `arxiv_curator.mcp` module:**
+# MAGIC **Using `global_findex_curator.mcp` module:**
 # MAGIC
 # MAGIC We've imported the following from our custom package:
 # MAGIC - `ToolInfo`: Pydantic model for tool information (name, spec, exec_fn)
@@ -263,14 +263,14 @@ tools_dict = {tool.name: tool for tool in mcp_tools}
 
 # Example: Use vector search tool directly
 # The tool name is the index name with '__' separators
-vector_search_tool_name = f"{cfg.catalog}__{cfg.schema}__arxiv_index"
+vector_search_tool_name = f"{cfg.catalog}__{cfg.schema}__global_findex_index"
 
 if vector_search_tool_name in tools_dict:
     search_tool = tools_dict[vector_search_tool_name]
-    
+
     # Execute the tool - only takes 'query' parameter
     result = search_tool.exec_fn(
-        query="deep learning architectures"
+        query="account ownership gender gap"
     )
     
     logger.info("Search Results:")
@@ -303,7 +303,7 @@ if mcp_tools:
 # MAGIC ### 1. **No Code Required**
 # MAGIC ```python
 # MAGIC # Without MCP: Write custom function
-# MAGIC def search_papers(query: str):
+# MAGIC def search_findex_reports(query: str):
 # MAGIC     # 50+ lines of code
 # MAGIC     pass
 # MAGIC
@@ -455,7 +455,7 @@ class SimpleAgent:
 # Create agent with MCP tools
 agent = SimpleAgent(
     llm_endpoint=cfg.llm_endpoint,
-    system_prompt="You are a helpful research assistant. Use the available tools to search for papers and answer questions.",
+    system_prompt="You are a helpful assistant specializing in global financial inclusion data. Use the available tools to search for relevant information and answer questions.",
     tools=mcp_tools
 )
 
@@ -469,5 +469,5 @@ for tool_name in agent._tools_dict.keys():
 logger.info("Testing agent with MCP tools:")
 logger.info("=" * 80)
 
-response = agent.chat("Find papers about transformer architectures")
+response = agent.chat("What do the Global Findex reports say about unbanked adults in Sub-Saharan Africa?")
 logger.info(f"Agent response: {response}")
