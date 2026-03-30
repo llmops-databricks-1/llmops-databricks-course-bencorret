@@ -10,13 +10,14 @@
 
 # COMMAND ----------
 
+from uuid import uuid4
+
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.database import DatabaseInstance, DatabaseInstanceState
-from uuid import uuid4
 from loguru import logger
 
+from global_findex_curator.config import get_env, load_config
 from global_findex_curator.memory import LakebaseMemory
-from global_findex_curator.config import load_config, get_env
 
 # COMMAND ----------
 
@@ -46,8 +47,7 @@ try:
         logger.info("Instance is stopped, starting...")
         instance = w.database.update_database_instance(
             name=instance_name,
-            database_instance=DatabaseInstance(name=instance_name,
-                                               stopped=False),
+            database_instance=DatabaseInstance(name=instance_name, stopped=False),
             update_mask="stopped",
         )
         instance = w.database.wait_get_database_instance_database_available(instance_name)
@@ -57,8 +57,7 @@ except Exception:
     logger.info(f"Creating new instance: {instance_name}")
     instance = w.database.create_database_instance(
         DatabaseInstance(
-            name=instance_name, capacity="CU_1",
-            usage_policy_id=usage_policy_id
+            name=instance_name, capacity="CU_1", usage_policy_id=usage_policy_id
         ),
     )
     lakebase_host = instance.response.read_write_dns
@@ -102,8 +101,14 @@ session_id = f"test-session-{uuid4()}"
 
 # Save some messages
 test_messages = [
-    {"role": "user", "content": "What does the Global Findex report say about financial inclusion?"},
-    {"role": "assistant", "content": "The Global Findex report shows that account ownership has grown significantly..."},
+    {
+        "role": "user",
+        "content": "What does the Global Findex report say about financial inclusion?",
+    },
+    {
+        "role": "assistant",
+        "content": "The Global Findex report shows that account ownership has grown significantly...",
+    },
     {"role": "user", "content": "Tell me more about trends in Sub-Saharan Africa"},
 ]
 
@@ -139,14 +144,15 @@ memory.save_messages(conversation_id, turn1_messages)
 
 # Simulate agent response
 turn1_response = [
-    {"role": "assistant", "content": "The Global Findex data shows a persistent gender gap in account ownership across many regions..."}
+    {
+        "role": "assistant",
+        "content": "The Global Findex data shows a persistent gender gap in account ownership across many regions...",
+    }
 ]
 memory.save_messages(conversation_id, turn1_response)
 
 # Turn 2 - reference to previous context
-turn2_messages = [
-    {"role": "user", "content": "Which regions show the largest gap?"}
-]
+turn2_messages = [{"role": "user", "content": "Which regions show the largest gap?"}]
 memory.save_messages(conversation_id, turn2_messages)
 
 # Load full conversation
@@ -166,8 +172,9 @@ for msg in full_conversation:
 # COMMAND ----------
 
 from openai import OpenAI
-from global_findex_curator.config import load_config, get_env
 from pyspark.sql import SparkSession
+
+from global_findex_curator.config import load_config
 
 spark = SparkSession.builder.getOrCreate()
 env = get_env(spark)
@@ -176,8 +183,9 @@ cfg = load_config("../project_config.yml", env)
 # Create OpenAI client for Databricks
 client = OpenAI(
     api_key=w.tokens.create(lifetime_seconds=1200).token_value,
-    base_url=f"{w.config.host}/serving-endpoints"
+    base_url=f"{w.config.host}/serving-endpoints",
 )
+
 
 def chat_with_memory(session_id: str, user_message: str, memory: LakebaseMemory) -> str:
     """Chat with LLM using session memory for context."""
@@ -185,11 +193,16 @@ def chat_with_memory(session_id: str, user_message: str, memory: LakebaseMemory)
     previous_messages = memory.load_messages(session_id)
 
     # Build messages with system prompt
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant specializing in global financial inclusion data from the World Bank Global Findex reports."}
-    ] + previous_messages + [
-        {"role": "user", "content": user_message}
-    ]
+    messages = (
+        [
+            {
+                "role": "system",
+                "content": "You are a helpful assistant specializing in global financial inclusion data from the World Bank Global Findex reports.",
+            }
+        ]
+        + previous_messages
+        + [{"role": "user", "content": user_message}]
+    )
 
     # Call LLM
     response = client.chat.completions.create(
@@ -200,12 +213,16 @@ def chat_with_memory(session_id: str, user_message: str, memory: LakebaseMemory)
     assistant_response = response.choices[0].message.content
 
     # Save new messages to memory
-    memory.save_messages(session_id, [
-        {"role": "user", "content": user_message},
-        {"role": "assistant", "content": assistant_response},
-    ])
+    memory.save_messages(
+        session_id,
+        [
+            {"role": "user", "content": user_message},
+            {"role": "assistant", "content": assistant_response},
+        ],
+    )
 
     return assistant_response
+
 
 logger.info("✓ Chat function with memory created")
 
@@ -215,13 +232,21 @@ logger.info("✓ Chat function with memory created")
 agent_session_id = f"agent-session-{uuid4()}"
 
 # First query
-response1 = chat_with_memory(agent_session_id, "What is the Global Findex database and what does it measure?", memory)
+response1 = chat_with_memory(
+    agent_session_id,
+    "What is the Global Findex database and what does it measure?",
+    memory,
+)
 logger.info(f"Response 1: {response1[:200]}...")
 
 # COMMAND ----------
 
 # Follow-up query with context (memory is automatically loaded)
-response2 = chat_with_memory(agent_session_id, "How often is this data collected and how many countries does it cover?", memory)
+response2 = chat_with_memory(
+    agent_session_id,
+    "How often is this data collected and how many countries does it cover?",
+    memory,
+)
 logger.info(f"Response 2: {response2[:200]}...")
 
 # COMMAND ----------
@@ -232,7 +257,9 @@ full_agent_conversation = memory.load_messages(agent_session_id)
 logger.info(f"✓ Full agent conversation ({len(full_agent_conversation)} messages):")
 for i, msg in enumerate(full_agent_conversation, 1):
     role = msg["role"]
-    content = msg["content"][:100] + "..." if len(msg["content"]) > 100 else msg["content"]
+    content = (
+        msg["content"][:100] + "..." if len(msg["content"]) > 100 else msg["content"]
+    )
     logger.info(f"  {i}. [{role}] {content}")
 
 # COMMAND ----------

@@ -28,13 +28,13 @@
 import asyncio
 import json
 
-from databricks.sdk import WorkspaceClient
 import nest_asyncio
-from openai import OpenAI
+from databricks.sdk import WorkspaceClient
 from loguru import logger
+from openai import OpenAI
 from pyspark.sql import SparkSession
 
-from global_findex_curator.config import load_config, get_env
+from global_findex_curator.config import get_env, load_config
 from global_findex_curator.mcp import create_mcp_tools
 
 # Enable nested event loops (required for Databricks notebooks)
@@ -73,14 +73,14 @@ logger.info(f"LLM endpoint: {cfg.llm_endpoint}")
 host = w.config.host
 
 # Build MCP server URLs
-mcp_urls = [
-    f"{host}/api/2.0/mcp/vector-search/{cfg.catalog}/{cfg.schema}"
-]
+mcp_urls = [f"{host}/api/2.0/mcp/vector-search/{cfg.catalog}/{cfg.schema}"]
 
 if cfg.genie_space_id:
     mcp_urls.append(f"{host}/api/2.0/mcp/genie/{cfg.genie_space_id}")
 else:
-    logger.warning("Genie space not configured — only Vector Search tools will be available")
+    logger.warning(
+        "Genie space not configured — only Vector Search tools will be available"
+    )
 
 logger.info(f"Loading tools from {len(mcp_urls)} MCP server(s)...")
 
@@ -137,6 +137,7 @@ Guidelines:
 
 # COMMAND ----------
 
+
 class GlobalFindexAgent:
     """Research assistant agent with MCP tools and conversation history."""
 
@@ -176,12 +177,11 @@ class GlobalFindexAgent:
         self.conversation_history.append({"role": "user", "content": user_message})
 
         # Build messages: system + history (the LLM sees the full conversation so far)
-        messages = (
-            [{"role": "system", "content": self.system_prompt}]
-            + self.conversation_history
-        )
+        messages = [
+            {"role": "system", "content": self.system_prompt}
+        ] + self.conversation_history
 
-        for iteration in range(max_iterations):
+        for _iteration in range(max_iterations):
             response = self._client.chat.completions.create(
                 model=self.llm_endpoint,
                 messages=messages,
@@ -192,21 +192,23 @@ class GlobalFindexAgent:
 
             if assistant_message.tool_calls:
                 # Append assistant message with tool calls to local messages
-                messages.append({
-                    "role": "assistant",
-                    "content": assistant_message.content,
-                    "tool_calls": [
-                        {
-                            "id": tc.id,
-                            "type": "function",
-                            "function": {
-                                "name": tc.function.name,
-                                "arguments": tc.function.arguments,
-                            },
-                        }
-                        for tc in assistant_message.tool_calls
-                    ],
-                })
+                messages.append(
+                    {
+                        "role": "assistant",
+                        "content": assistant_message.content,
+                        "tool_calls": [
+                            {
+                                "id": tc.id,
+                                "type": "function",
+                                "function": {
+                                    "name": tc.function.name,
+                                    "arguments": tc.function.arguments,
+                                },
+                            }
+                            for tc in assistant_message.tool_calls
+                        ],
+                    }
+                )
 
                 for tool_call in assistant_message.tool_calls:
                     tool_name = tool_call.function.name
@@ -219,11 +221,13 @@ class GlobalFindexAgent:
                     except Exception as e:
                         result = f"Error: {e}"
 
-                    messages.append({
-                        "role": "tool",
-                        "tool_call_id": tool_call.id,
-                        "content": str(result),
-                    })
+                    messages.append(
+                        {
+                            "role": "tool",
+                            "tool_call_id": tool_call.id,
+                            "content": str(result),
+                        }
+                    )
             else:
                 # Final answer — persist to conversation history
                 self.conversation_history.append(
@@ -236,6 +240,7 @@ class GlobalFindexAgent:
     def clear_history(self) -> None:
         """Clear conversation history."""
         self.conversation_history = []
+
 
 # COMMAND ----------
 
@@ -288,9 +293,7 @@ logger.info(f"Response:\n{response}")
 
 # COMMAND ----------
 
-response = agent.chat(
-    "How does that compare to other regions?"
-)
+response = agent.chat("How does that compare to other regions?")
 logger.info(f"Response:\n{response}")
 
 # COMMAND ----------

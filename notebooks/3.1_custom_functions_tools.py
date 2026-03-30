@@ -45,12 +45,13 @@
 # COMMAND ----------
 
 import json
+
 from databricks.sdk import WorkspaceClient
 from databricks.vector_search.client import VectorSearchClient
 from loguru import logger
 from pyspark.sql import SparkSession
 
-from global_findex_curator.config import load_config, get_env
+from global_findex_curator.config import get_env, load_config
 from global_findex_curator.mcp import ToolInfo
 
 # COMMAND ----------
@@ -100,6 +101,7 @@ vsc = VectorSearchClient(
 
 # COMMAND ----------
 
+
 def calculator(operation: str, a: float, b: float) -> float:
     """Perform basic arithmetic operations.
 
@@ -112,16 +114,17 @@ def calculator(operation: str, a: float, b: float) -> float:
         Result of the operation
     """
     operations = {
-        'add': lambda x, y: x + y,
-        'subtract': lambda x, y: x - y,
-        'multiply': lambda x, y: x * y,
-        'divide': lambda x, y: x / y if y != 0 else float('inf')
+        "add": lambda x, y: x + y,
+        "subtract": lambda x, y: x - y,
+        "multiply": lambda x, y: x * y,
+        "divide": lambda x, y: x / y if y != 0 else float("inf"),
     }
 
     if operation not in operations:
         raise ValueError(f"Unknown operation: {operation}")
 
     return operations[operation](a, b)
+
 
 # Test the function
 result = calculator("multiply", 5, 3)
@@ -145,20 +148,14 @@ calculator_tool_spec = {
                 "operation": {
                     "type": "string",
                     "enum": ["add", "subtract", "multiply", "divide"],
-                    "description": "The arithmetic operation to perform"
+                    "description": "The arithmetic operation to perform",
                 },
-                "a": {
-                    "type": "number",
-                    "description": "The first number"
-                },
-                "b": {
-                    "type": "number",
-                    "description": "The second number"
-                }
+                "a": {"type": "number", "description": "The first number"},
+                "b": {"type": "number", "description": "The second number"},
             },
-            "required": ["operation", "a", "b"]
-        }
-    }
+            "required": ["operation", "a", "b"],
+        },
+    },
 }
 
 logger.info("Calculator Tool Specification:")
@@ -171,6 +168,7 @@ logger.info(json.dumps(calculator_tool_spec, indent=2))
 
 # COMMAND ----------
 
+
 # Helper function to parse vector search results
 def parse_vector_search_results(results):
     """Parse vector search results from array format to dict format.
@@ -181,12 +179,14 @@ def parse_vector_search_results(results):
     Returns:
         List of dictionaries with column names as keys
     """
-    columns = [col['name'] for col in results.get('manifest', {}).get('columns', [])]
-    data_array = results.get('result', {}).get('data_array', [])
+    columns = [col["name"] for col in results.get("manifest", {}).get("columns", [])]
+    data_array = results.get("result", {}).get("data_array", [])
 
     return [dict(zip(columns, row_data)) for row_data in data_array]
 
+
 # COMMAND ----------
+
 
 def search_findex_reports(query: str, num_results: int = 5) -> str:
     """Search for relevant Global Findex content using vector search.
@@ -206,7 +206,7 @@ def search_findex_reports(query: str, num_results: int = 5) -> str:
         "query_text": query,
         "columns": ["unique_id", "text", "summary"],
         "num_results": num_results,
-        "query_type": "hybrid"
+        "query_type": "hybrid",
     }
 
     # Perform search
@@ -215,13 +215,16 @@ def search_findex_reports(query: str, num_results: int = 5) -> str:
     # Format results using helper function
     documents = []
     for row in parse_vector_search_results(results):
-        documents.append({
-            "unique_id": row.get("unique_id", "N/A"),
-            "summary": str(row.get("summary", "N/A")),
-            "excerpt": row.get("text", "")[:200] + "..."
-        })
+        documents.append(
+            {
+                "unique_id": row.get("unique_id", "N/A"),
+                "summary": str(row.get("summary", "N/A")),
+                "excerpt": row.get("text", "")[:200] + "...",
+            }
+        )
 
     return json.dumps(documents, indent=2)
+
 
 # Test the function
 results = search_findex_reports("financial inclusion developing countries", num_results=2)
@@ -245,17 +248,17 @@ search_findex_reports_tool_spec = {
             "properties": {
                 "query": {
                     "type": "string",
-                    "description": "The search query describing what information to find in the Global Findex reports"
+                    "description": "The search query describing what information to find in the Global Findex reports",
                 },
                 "num_results": {
                     "type": "integer",
                     "description": "Number of results to return (default: 5)",
-                    "default": 5
-                }
+                    "default": 5,
+                },
             },
-            "required": ["query"]
-        }
-    }
+            "required": ["query"],
+        },
+    },
 }
 
 logger.info("Search Findex Reports Tool Specification:")
@@ -273,15 +276,13 @@ logger.info(json.dumps(search_findex_reports_tool_spec, indent=2))
 
 # Create tool info objects
 calculator_tool = ToolInfo(
-    name="calculator",
-    spec=calculator_tool_spec,
-    exec_fn=calculator
+    name="calculator", spec=calculator_tool_spec, exec_fn=calculator
 )
 
 search_findex_reports_tool = ToolInfo(
     name="search_findex_reports",
     spec=search_findex_reports_tool_spec,
-    exec_fn=search_findex_reports
+    exec_fn=search_findex_reports,
 )
 
 logger.info("Available Tools:")
@@ -295,6 +296,8 @@ logger.info(f"2. {search_findex_reports_tool.name}")
 
 # COMMAND ----------
 from typing import Any
+
+
 class ToolRegistry:
     """Registry for managing agent tools."""
 
@@ -346,18 +349,14 @@ logger.info(f"Tools: {registry.list_tools()}")
 # COMMAND ----------
 
 # Execute calculator tool
-calc_result = registry.execute("calculator", {
-    "operation": "add",
-    "a": 10,
-    "b": 5
-})
+calc_result = registry.execute("calculator", {"operation": "add", "a": 10, "b": 5})
 logger.info(f"Calculator result: {calc_result}")
 
 # Execute search tool
-search_result = registry.execute("search_findex_reports", {
-    "query": "mobile money unbanked population",
-    "num_results": 3
-})
+search_result = registry.execute(
+    "search_findex_reports",
+    {"query": "mobile money unbanked population", "num_results": 3},
+)
 logger.info(f"Search result:\n{search_result}")
 
 # COMMAND ----------
@@ -428,6 +427,7 @@ logger.info(f"Search result:\n{search_result}")
 
 # COMMAND ----------
 
+
 def test_tool(tool_name: str, test_cases: list[dict]):
     """Test a tool with multiple test cases."""
     logger.info(f"Testing tool: {tool_name}")
@@ -439,17 +439,21 @@ def test_tool(tool_name: str, test_cases: list[dict]):
 
         try:
             result = registry.execute(tool_name, test_case)
-            logger.info(f"  ✓ Success")
+            logger.info("  ✓ Success")
             logger.info(f"  Result: {str(result)[:100]}...")
         except Exception as e:
             logger.error(f"  ✗ Error: {e}")
 
+
 # Test calculator
-test_tool("calculator", [
-    {"operation": "add", "a": 5, "b": 3},
-    {"operation": "multiply", "a": 4, "b": 7},
-    {"operation": "divide", "a": 10, "b": 2},
-])
+test_tool(
+    "calculator",
+    [
+        {"operation": "add", "a": 5, "b": 3},
+        {"operation": "multiply", "a": 4, "b": 7},
+        {"operation": "divide", "a": 10, "b": 2},
+    ],
+)
 
 # COMMAND ----------
 
@@ -460,6 +464,7 @@ test_tool("calculator", [
 
 # COMMAND ----------
 
+
 class SimpleAgent:
     """A simple agent that can call tools in a loop."""
 
@@ -469,7 +474,7 @@ class SimpleAgent:
         self._tools_dict = {tool.name: tool for tool in tools}
         self._client = OpenAI(
             api_key=w.tokens.create(lifetime_seconds=1200).token_value,
-            base_url=f"{w.config.host}/serving-endpoints"
+            base_url=f"{w.config.host}/serving-endpoints",
         )
 
     def get_tool_specs(self) -> list[dict]:
@@ -486,7 +491,7 @@ class SimpleAgent:
         """Chat with the agent, allowing tool calls."""
         messages = [
             {"role": "system", "content": self.system_prompt},
-            {"role": "user", "content": user_message}
+            {"role": "user", "content": user_message},
         ]
 
         for iteration in range(max_iterations):
@@ -502,21 +507,23 @@ class SimpleAgent:
             # Check if LLM wants to call tools
             if assistant_message.tool_calls:
                 # Add assistant message with tool calls (exclude unsupported fields)
-                messages.append({
-                    "role": "assistant",
-                    "content": assistant_message.content,
-                    "tool_calls": [
-                        {
-                            "id": tc.id,
-                            "type": "function",
-                            "function": {
-                                "name": tc.function.name,
-                                "arguments": tc.function.arguments
+                messages.append(
+                    {
+                        "role": "assistant",
+                        "content": assistant_message.content,
+                        "tool_calls": [
+                            {
+                                "id": tc.id,
+                                "type": "function",
+                                "function": {
+                                    "name": tc.function.name,
+                                    "arguments": tc.function.arguments,
+                                },
                             }
-                        }
-                        for tc in assistant_message.tool_calls
-                    ]
-                })
+                            for tc in assistant_message.tool_calls
+                        ],
+                    }
+                )
 
                 # Execute each tool call
                 for tool_call in assistant_message.tool_calls:
@@ -531,16 +538,19 @@ class SimpleAgent:
                         result = f"Error: {str(e)}"
 
                     # Add tool result to messages
-                    messages.append({
-                        "role": "tool",
-                        "tool_call_id": tool_call.id,
-                        "content": str(result)
-                    })
+                    messages.append(
+                        {
+                            "role": "tool",
+                            "tool_call_id": tool_call.id,
+                            "content": str(result),
+                        }
+                    )
             else:
                 # No tool calls, return the response
                 return assistant_message.content
 
         return "Max iterations reached."
+
 
 # COMMAND ----------
 
@@ -550,7 +560,7 @@ from openai import OpenAI
 agent = SimpleAgent(
     llm_endpoint=cfg.llm_endpoint,
     system_prompt="You are a helpful assistant specializing in global financial inclusion data. Use the available tools to answer questions.",
-    tools=[calculator_tool, search_findex_reports_tool]
+    tools=[calculator_tool, search_findex_reports_tool],
 )
 
 # agent = SimpleAgent(
@@ -577,5 +587,7 @@ logger.info(f"Agent response: {response}")
 logger.info("Testing agent with search tool:")
 logger.info("=" * 80)
 
-response = agent.chat("What does the Global Findex report say about account ownership in low-income countries?")
+response = agent.chat(
+    "What does the Global Findex report say about account ownership in low-income countries?"
+)
 logger.info(f"Agent response: {response}")

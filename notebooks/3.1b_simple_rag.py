@@ -23,13 +23,13 @@
 
 # COMMAND ----------
 
-from pyspark.sql import SparkSession
 from databricks.sdk import WorkspaceClient
 from databricks.vector_search.client import VectorSearchClient
-from openai import OpenAI
 from loguru import logger
+from openai import OpenAI
+from pyspark.sql import SparkSession
 
-from global_findex_curator.config import load_config, get_env
+from global_findex_curator.config import get_env, load_config
 
 # COMMAND ----------
 
@@ -47,7 +47,7 @@ w = WorkspaceClient()
 # Create OpenAI client for Databricks
 client = OpenAI(
     api_key=w.tokens.create(lifetime_seconds=1200).token_value,
-    base_url=f"{w.config.host}/serving-endpoints"
+    base_url=f"{w.config.host}/serving-endpoints",
 )
 
 # Create Vector Search client
@@ -68,6 +68,7 @@ logger.info(f"✓ Using LLM endpoint: {cfg.llm_endpoint}")
 
 # COMMAND ----------
 
+
 def retrieve_documents(query: str, num_results: int = 5) -> list[dict]:
     """Retrieve relevant documents from vector search.
 
@@ -85,7 +86,7 @@ def retrieve_documents(query: str, num_results: int = 5) -> list[dict]:
         query_text=query,
         columns=["unique_id", "text", "summary"],
         num_results=num_results,
-        query_type="hybrid"
+        query_type="hybrid",
     )
 
     # Parse results
@@ -93,13 +94,16 @@ def retrieve_documents(query: str, num_results: int = 5) -> list[dict]:
     if results and "result" in results:
         data_array = results["result"].get("data_array", [])
         for row in data_array:
-            documents.append({
-                "unique_id": row[0],
-                "text": row[1],
-                "summary": row[2],
-            })
+            documents.append(
+                {
+                    "unique_id": row[0],
+                    "text": row[1],
+                    "summary": row[2],
+                }
+            )
 
     return documents
+
 
 # COMMAND ----------
 
@@ -122,6 +126,7 @@ for i, doc in enumerate(docs, 1):
 
 # COMMAND ----------
 
+
 def build_rag_prompt(question: str, documents: list[dict]) -> str:
     """Build a prompt with retrieved context.
 
@@ -136,9 +141,9 @@ def build_rag_prompt(question: str, documents: list[dict]) -> str:
     context_parts = []
     for i, doc in enumerate(documents, 1):
         context_parts.append(f"""
-Document {i} (ID: {doc['unique_id']})
-summary: {doc['summary']}
-Content: {doc['text']}
+Document {i} (ID: {doc["unique_id"]})
+summary: {doc["summary"]}
+Content: {doc["text"]}
 """)
 
     context = "\n---\n".join(context_parts)
@@ -160,6 +165,7 @@ ANSWER:"""
 
     return prompt
 
+
 # COMMAND ----------
 
 # Test prompt building
@@ -176,6 +182,7 @@ logger.info(f"Preview:\n{test_prompt[:500]}...")
 # MAGIC Combine retrieval and generation into a single function.
 
 # COMMAND ----------
+
 
 def rag_query(question: str, num_docs: int = 5) -> dict:
     """Answer a question using RAG.
@@ -199,9 +206,7 @@ def rag_query(question: str, num_docs: int = 5) -> dict:
     logger.info("Generating answer...")
     response = client.chat.completions.create(
         model=cfg.llm_endpoint,
-        messages=[
-            {"role": "user", "content": prompt}
-        ],
+        messages=[{"role": "user", "content": prompt}],
         max_tokens=1000,
         temperature=0.7,
     )
@@ -215,8 +220,9 @@ def rag_query(question: str, num_docs: int = 5) -> dict:
         "sources": [
             {"unique_id": doc["unique_id"], "summary": doc["summary"]}
             for doc in documents
-        ]
+        ],
     }
+
 
 # COMMAND ----------
 
@@ -226,14 +232,16 @@ def rag_query(question: str, num_docs: int = 5) -> dict:
 # COMMAND ----------
 
 # Test with a financial inclusion question
-result = rag_query("What are the main barriers to financial inclusion in developing countries?")
+result = rag_query(
+    "What are the main barriers to financial inclusion in developing countries?"
+)
 
 logger.info("=" * 80)
 logger.info(f"Question: {result['question']}")
 logger.info("=" * 80)
 logger.info(f"\nAnswer:\n{result['answer']}")
 logger.info("\nSources:")
-for src in result['sources']:
+for src in result["sources"]:
     logger.info(f"  - {src['unique_id']} | {str(src['summary'])[:80]}")
 
 # COMMAND ----------
@@ -246,7 +254,7 @@ logger.info(f"Question: {result2['question']}")
 logger.info("=" * 80)
 logger.info(f"\nAnswer:\n{result2['answer']}")
 logger.info("\nSources:")
-for src in result2['sources']:
+for src in result2["sources"]:
     logger.info(f"  - {src['unique_id']} | {str(src['summary'])[:80]}")
 
 # COMMAND ----------
@@ -257,6 +265,7 @@ for src in result2['sources']:
 # MAGIC Extend RAG to support multi-turn conversations.
 
 # COMMAND ----------
+
 
 class SimpleRAG:
     """Simple RAG system with conversation history."""
@@ -270,7 +279,7 @@ class SimpleRAG:
         self.w = WorkspaceClient()
         self.client = OpenAI(
             api_key=self.w.tokens.create(lifetime_seconds=1200).token_value,
-            base_url=f"{self.w.config.host}/serving-endpoints"
+            base_url=f"{self.w.config.host}/serving-endpoints",
         )
         self.vsc = VectorSearchClient(
             workspace_url=self.w.config.host,
@@ -284,17 +293,19 @@ class SimpleRAG:
             query_text=query,
             columns=["unique_id", "text", "summary"],
             num_results=num_results,
-            query_type="hybrid"
+            query_type="hybrid",
         )
 
         documents = []
         if results and "result" in results:
             for row in results["result"].get("data_array", []):
-                documents.append({
-                    "unique_id": row[0],
-                    "text": row[1],
-                    "summary": row[2],
-                })
+                documents.append(
+                    {
+                        "unique_id": row[0],
+                        "text": row[1],
+                        "summary": row[2],
+                    }
+                )
         return documents
 
     def chat(self, question: str, num_docs: int = 3) -> str:
@@ -303,10 +314,9 @@ class SimpleRAG:
         documents = self.retrieve(question, num_results=num_docs)
 
         # Build context
-        context = "\n\n".join([
-            f"[{doc['unique_id']}]: {doc['text']}"
-            for doc in documents
-        ])
+        context = "\n\n".join(
+            [f"[{doc['unique_id']}]: {doc['text']}" for doc in documents]
+        )
 
         # Build system message with context
         system_message = f"""You are a helpful assistant specializing in global financial inclusion data. Use the following context from Global Findex reports to answer questions.
@@ -320,7 +330,9 @@ If the context doesn't contain relevant information, say so. Always reference th
         self.conversation_history.append({"role": "user", "content": question})
 
         # Build messages for LLM
-        messages = [{"role": "system", "content": system_message}] + self.conversation_history
+        messages = [
+            {"role": "system", "content": system_message}
+        ] + self.conversation_history
 
         # Generate response
         response = self.client.chat.completions.create(
@@ -339,6 +351,7 @@ If the context doesn't contain relevant information, say so. Always reference th
     def clear_history(self):
         """Clear conversation history."""
         self.conversation_history = []
+
 
 # COMMAND ----------
 

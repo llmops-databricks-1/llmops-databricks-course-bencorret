@@ -17,7 +17,7 @@
 # COMMAND ----------
 from pyspark.sql import SparkSession
 
-from global_findex_curator.config import load_config, get_env
+from global_findex_curator.config import get_env, load_config
 
 spark = SparkSession.builder.getOrCreate()
 
@@ -39,6 +39,7 @@ schema = cfg.schema
 # COMMAND ----------
 
 import json
+
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service import sql
 from databricks.sdk.service.sql import CreateWarehouseRequestWarehouseType
@@ -47,7 +48,7 @@ from loguru import logger
 w = WorkspaceClient()
 
 # Check if genie_space_id is configured
-if hasattr(cfg, 'genie_space_id') and cfg.genie_space_id:
+if hasattr(cfg, "genie_space_id") and cfg.genie_space_id:
     logger.info(f"Using existing Genie Space from config: {cfg.genie_space_id}")
     space_id = cfg.genie_space_id
     USE_EXISTING_SPACE = True
@@ -75,7 +76,9 @@ if not USE_EXISTING_SPACE:
         warehouse_type=CreateWarehouseRequestWarehouseType("PRO"),
         enable_serverless_compute=True,
         tags=sql.EndpointTags(
-            custom_tags=[sql.EndpointTagPair(key="Project", value="global_findex_curator")]
+            custom_tags=[
+                sql.EndpointTagPair(key="Project", value="global_findex_curator")
+            ]
         ),
     ).result()
     warehouse_id = created.id
@@ -166,8 +169,8 @@ logger.info(f"Space config: {json.loads(space.serialized_space)}")
 # COMMAND ----------
 
 conversation = w.genie.start_conversation_and_wait(
-    space_id=space.space_id,
-    content="Find the last 10 Global Findex reports published")
+    space_id=space.space_id, content="Find the last 10 Global Findex reports published"
+)
 
 conversation.as_dict()
 
@@ -183,7 +186,8 @@ conversation.as_dict()
 message = w.genie.create_message_and_wait(
     space_id=space.space_id,
     conversation_id=conversation.conversation_id,
-    content="What document types are represented among the last 10 reports published?")
+    content="What document types are represented among the last 10 reports published?",
+)
 
 message.as_dict()
 

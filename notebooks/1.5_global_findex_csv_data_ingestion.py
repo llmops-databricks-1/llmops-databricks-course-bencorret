@@ -1,10 +1,8 @@
 # Databricks notebook source
 
-from datetime import datetime
 
 from loguru import logger
 from pyspark.sql import SparkSession
-from pyspark.sql.types import ArrayType, LongType, StringType, StructField, StructType
 
 from global_findex_curator.config import get_env, load_config
 
@@ -27,7 +25,7 @@ logger.info(f"Schema {CATALOG}.{SCHEMA} ready")
 # Write CSV data to tables, overwrite mode
 csv_paths = [
     f"/Volumes/mlops_{env}/corretco/global_findex_volume/csv/findex_microdata_2025.csv",
-    f"/Volumes/mlops_{env}/corretco/global_findex_volume/csv/global_findex_database_2025.csv"
+    f"/Volumes/mlops_{env}/corretco/global_findex_volume/csv/global_findex_database_2025.csv",
 ]
 
 for csv_path in csv_paths:
