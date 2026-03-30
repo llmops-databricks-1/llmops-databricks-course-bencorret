@@ -48,10 +48,10 @@ client_secret = secret_resp.json()["secret"]
 
 # Step 2: Store credentials in a secret scope
 scope_name = "global-findex-agent-scope"
-try:
+import contextlib
+
+with contextlib.suppress(Exception):
     w.secrets.create_scope(scope=scope_name)
-except Exception:
-    pass  # scope already exists
 w.secrets.put_secret(scope=scope_name, key="client_id", string_value=client_id)
 w.secrets.put_secret(scope=scope_name, key="client_secret", string_value=client_secret)
 

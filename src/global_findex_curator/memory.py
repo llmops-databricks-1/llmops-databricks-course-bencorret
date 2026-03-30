@@ -29,7 +29,8 @@ class LakebaseMemory:
         """Build connection string for Lakebase.
 
         Supports two authentication modes:
-        - SPN (production): Set DATABRICKS_CLIENT_ID, DATABRICKS_CLIENT_SECRET, DATABRICKS_HOST
+        - SPN (production): Set DATABRICKS_CLIENT_ID,
+          DATABRICKS_CLIENT_SECRET, DATABRICKS_HOST
         - User (local testing): Uses default WorkspaceClient auth (e.g., ~/.databrickscfg)
         """
         w = WorkspaceClient()

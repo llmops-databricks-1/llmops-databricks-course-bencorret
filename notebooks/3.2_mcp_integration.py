@@ -389,7 +389,7 @@ class SimpleAgent:
             {"role": "user", "content": user_message},
         ]
 
-        for iteration in range(max_iterations):
+        for _iteration in range(max_iterations):
             response = self._client.chat.completions.create(
                 model=self.llm_endpoint,
                 messages=messages,
@@ -452,7 +452,7 @@ agent = SimpleAgent(
 )
 
 logger.info("✓ Agent created with MCP tools:")
-for tool_name in agent._tools_dict.keys():
+for tool_name in agent._tools_dict:
     logger.info(f"  - {tool_name}")
 
 # COMMAND ----------
