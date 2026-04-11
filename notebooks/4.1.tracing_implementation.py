@@ -72,7 +72,7 @@ cfg = load_config("../project_config.yml", env)
 # COMMAND ----------
 
 # Set experiment
-mlflow.set_experiment("/Shared/llmops-course-demo")
+mlflow.set_experiment("/Shared/findex-research-assistant")
 
 # Simple function with tracing
 @mlflow.trace
