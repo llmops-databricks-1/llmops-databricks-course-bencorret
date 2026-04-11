@@ -28,7 +28,7 @@ from mlflow.types.responses import (
 from pyspark.sql import SparkSession
 
 from global_findex_curator.config import load_config, get_env
-from global_findex_curator.agent import ArxivAgent
+from global_findex_curator.agent import FindexAgent
 
 
 # COMMAND ----------
@@ -89,9 +89,9 @@ w = WorkspaceClient()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 2. ArxivAgent with Tracing
+# MAGIC ## 2. FindexAgent with Tracing
 # MAGIC
-# MAGIC The `ArxivAgent` class from `arxiv_curator.agent` provides:
+# MAGIC The `FindexAgent` class from `global_findex_curator.agent` provides:
 # MAGIC - Full MLflow tracing integration
 # MAGIC - MCP tool support (Vector Search, Genie)
 # MAGIC - Session and request tracking
@@ -103,7 +103,7 @@ w = WorkspaceClient()
 # MAGIC ### Agent Architecture (from agent.py):
 # MAGIC
 # MAGIC ```python
-# MAGIC class ArxivAgent(ResponsesAgent):
+# MAGIC class FindexAgent(ResponsesAgent):
 # MAGIC     def __init__(self, llm_endpoint, system_prompt, catalog, schema, genie_space_id):
 # MAGIC         # Automatically creates MCP tools from Vector Search and Genie
 # MAGIC         ...
@@ -127,25 +127,25 @@ w = WorkspaceClient()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## 3. Create ArxivAgent Instance
+# MAGIC ## 3. Create FindexAgent Instance
 # MAGIC
 # MAGIC The agent automatically gets MCP tools for:
-# MAGIC - Vector Search (search arxiv papers)
+# MAGIC - Vector Search (search Global FIndex reports)
 # MAGIC - Genie (query data with natural language)
 
 # COMMAND ----------
 
 # Create agent with MCP tools
-agent = ArxivAgent(
+agent = FindexAgent(
     llm_endpoint=cfg.llm_endpoint,
-    system_prompt="You are a helpful research assistant. Use vector search to find papers and Genie to query data.",
+    system_prompt=cfg.system_prompt,
     catalog=cfg.catalog,
     schema=cfg.schema,
     genie_space_id=cfg.genie_space_id,
     lakebase_project_id=cfg.lakebase_project_id
 )
 
-logger.info("✓ ArxivAgent created with MCP tools:")
+logger.info("✓ FindexAgent created with MCP tools:")
 logger.info(f"  - Vector Search: {cfg.catalog}.{cfg.schema}")
 logger.info(f"  - Genie Space: {cfg.genie_space_id}")
 
@@ -165,7 +165,7 @@ request_id = f"req-{timestamp}-{random.randint(100000, 999999)}"
 test_request = ResponsesAgentRequest(
     input=[{
         "role": "user",
-        "content": "Find papers about transformers and attention mechanisms"
+        "content": "What do the Global Findex reports say about barriers to financial inclusion?"
     }],
     custom_inputs={
         "session_id": session_id,
