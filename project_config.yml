@@ -32,7 +32,7 @@ dev:
   warehouse_id: 9c9d5a71fb3773e4
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: "01f12b4f1c881997a13d98811a9617ca"
-  usage_policy_id: 686c435d-90af-4c40-9ca4-442d4a3d8899
+  usage_policy_id: 6f66ddee-a8d4-4a2b-b08d-d225eb6feb95
   lakebase_project_id: null
   experiment_name: /Shared/findex-research-assistant
 
@@ -45,7 +45,7 @@ acc:
   warehouse_id: 9c9d5a71fb3773e4
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
-  usage_policy_id: 686c435d-90af-4c40-9ca4-442d4a3d8899
+  usage_policy_id: 6f66ddee-a8d4-4a2b-b08d-d225eb6feb95
   lakebase_project_id: null
   experiment_name: /Shared/findex-research-assistant
 
@@ -58,7 +58,7 @@ prd:
   warehouse_id: 9c9d5a71fb3773e4
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
-  usage_policy_id: 686c435d-90af-4c40-9ca4-442d4a3d8899
+  usage_policy_id: 6f66ddee-a8d4-4a2b-b08d-d225eb6feb95
   lakebase_project_id: null
   experiment_name: /Shared/findex-research-assistant
 
