@@ -14,6 +14,7 @@
 # COMMAND ----------
 
 import os
+
 import mlflow
 from databricks import agents
 from databricks.sdk import WorkspaceClient
@@ -25,6 +26,7 @@ from global_findex_curator.config import ProjectConfig
 # Setup MLflow tracking
 if "DATABRICKS_RUNTIME_VERSION" not in os.environ:
     from dotenv import load_dotenv
+
     load_dotenv()
     profile = os.environ.get("PROFILE", "DEFAULT")
     mlflow.set_tracking_uri(f"databricks://{profile}")
@@ -34,10 +36,11 @@ cfg = ProjectConfig.from_yaml("../project_config.yml")
 
 model_name = f"{cfg.catalog}.{cfg.schema}.global_findex_agent"
 endpoint_name = "global-findex-agent-endpoint-dev-course"
-secret_scope = "arxiv-agent-scope" # We have to reuse the same secret scope from the teachers, to get LakeBase credentions. Which we don't use anyway.
+secret_scope = "arxiv-agent-scope"  # We have to reuse the same secret scope from the teachers, to get LakeBase credentions. Which we don't use anyway.
 
-model_version = MlflowClient().get_model_version_by_alias(
-    model_name, "latest-model").version
+model_version = (
+    MlflowClient().get_model_version_by_alias(model_name, "latest-model").version
+)
 
 workspace = WorkspaceClient()
 experiment = MlflowClient().get_experiment_by_name(cfg.experiment_name)
@@ -87,6 +90,7 @@ agents.deploy(
 
 import random
 from datetime import datetime
+
 from openai import OpenAI
 
 host = workspace.config.host
@@ -104,12 +108,17 @@ request_id = f"req-{timestamp}-{random.randint(100000, 999999)}"
 response = client.responses.create(
     model=endpoint_name,
     input=[
-        {"role": "user", "content": "Why does India have a notably higher share of inactive accounts than other low- and middle-income economies?"}
+        {
+            "role": "user",
+            "content": "Why does India have a notably higher share of inactive accounts than other low- and middle-income economies?",
+        }
     ],
-    extra_body={"custom_inputs": {
-        "session_id": session_id,
-        "request_id": request_id,
-    }}
+    extra_body={
+        "custom_inputs": {
+            "session_id": session_id,
+            "request_id": request_id,
+        }
+    },
 )
 
 logger.info(f"Response ID: {response.id}")

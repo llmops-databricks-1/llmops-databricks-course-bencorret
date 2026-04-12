@@ -52,7 +52,9 @@ class FindexAgent(ResponsesAgent):
         self.system_prompt = system_prompt
         self.llm_endpoint = llm_endpoint
         self.workspace_client = WorkspaceClient()
-        self.model_serving_client = self.workspace_client.serving_endpoints.get_open_ai_client()
+        self.model_serving_client = (
+            self.workspace_client.serving_endpoints.get_open_ai_client()
+        )
 
         # Initialize Lakebase memory if configured
         self.memory: LakebaseMemory | None = None
@@ -89,7 +91,9 @@ class FindexAgent(ResponsesAgent):
         messages: list[dict[str, Any]],
     ) -> Generator[dict[str, Any], None, None]:
         with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", message="PydanticSerializationUnexpectedValue")
+            warnings.filterwarnings(
+                "ignore", message="PydanticSerializationUnexpectedValue"
+            )
             stream = self.model_serving_client.chat.completions.create(
                 model=self.llm_endpoint,
                 messages=to_chat_completions_input(messages),
@@ -121,9 +125,13 @@ class FindexAgent(ResponsesAgent):
         args = json.loads(tool_call["arguments"])
         result = str(self.execute_tool(tool_name=tool_call["name"], args=args))
 
-        tool_call_output = self.create_function_call_output_item(tool_call["call_id"], result)
+        tool_call_output = self.create_function_call_output_item(
+            tool_call["call_id"], result
+        )
         messages.append(tool_call_output)
-        return ResponsesAgentStreamEvent(type="response.output_item.done", item=tool_call_output)
+        return ResponsesAgentStreamEvent(
+            type="response.output_item.done", item=tool_call_output
+        )
 
     @mlflow.trace(span_type=SpanType.RETRIEVER, name="memory_load")
     def load_memory(self, session_id: str) -> list[dict[str, Any]]:
@@ -201,7 +209,9 @@ class FindexAgent(ResponsesAgent):
         mlflow.update_current_trace(
             tags={
                 "git_sha": os.getenv("GIT_SHA", "local"),
-                "model_serving_endpoint_name": os.getenv("MODEL_SERVING_ENDPOINT_NAME", "local"),
+                "model_serving_endpoint_name": os.getenv(
+                    "MODEL_SERVING_ENDPOINT_NAME", "local"
+                ),
                 "model_version": os.getenv("MODEL_VERSION", "local"),
             },
             metadata=({"mlflow.trace.session": session_id} if session_id else {}),
@@ -232,7 +242,9 @@ class FindexAgent(ResponsesAgent):
         session_id = custom.get("session_id")
         request_id = custom.get("request_id")
 
-        previous_messages = self.load_memory(session_id) if session_id and self.memory else []
+        previous_messages = (
+            self.load_memory(session_id) if session_id and self.memory else []
+        )
 
         request_input = [i.model_dump() for i in request.input]
         events = self.call_and_run_tools(
@@ -270,7 +282,9 @@ def log_register_agent(
     resources = [
         DatabricksServingEndpoint(endpoint_name=cfg.llm_endpoint),
         DatabricksGenieSpace(genie_space_id=cfg.genie_space_id),
-        DatabricksVectorSearchIndex(index_name=f"{cfg.catalog}.{cfg.schema}.global_findex_index"),
+        DatabricksVectorSearchIndex(
+            index_name=f"{cfg.catalog}.{cfg.schema}.global_findex_index"
+        ),
         DatabricksTable(table_name=f"{cfg.catalog}.{cfg.schema}.findex_microdata_2025"),
         DatabricksSQLWarehouse(warehouse_id=cfg.warehouse_id),
         DatabricksServingEndpoint(endpoint_name="databricks-bge-large-en"),

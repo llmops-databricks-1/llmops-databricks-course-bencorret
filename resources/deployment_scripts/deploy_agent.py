@@ -12,7 +12,7 @@ from global_findex_curator.config import ProjectConfig
 # Get parameters (passed via base_parameters in job YAML)
 git_sha = dbutils.widgets.get("git_sha")
 env = dbutils.widgets.get("env")
-secret_scope = "arxiv-agent-scope" # Only needed to use LakeBase credetials ... which we do not use in our project.
+secret_scope = "arxiv-agent-scope"  # Only needed to use LakeBase credetials ... which we do not use in our project.
 
 # Load configuration
 cfg = ProjectConfig.from_yaml("../../project_config.yml", env=env)

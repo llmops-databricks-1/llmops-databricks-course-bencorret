@@ -54,6 +54,8 @@ pythonpath = ["."]
 
 [tool.ruff]
 line-length = 90
+# Databricks notebook built-ins injected at runtime
+builtins = ["display", "dbutils"]
 
 [tool.ruff.lint]
 select = [

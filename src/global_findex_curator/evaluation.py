@@ -35,7 +35,9 @@ hook_in_post_guideline = Guidelines(
 )
 
 
-def evaluate_agent(cfg: ProjectConfig, eval_inputs_path: str) -> mlflow.models.EvaluationResult:
+def evaluate_agent(
+    cfg: ProjectConfig, eval_inputs_path: str
+) -> mlflow.models.EvaluationResult:
     """Run evaluation on the agent.
 
     Args:
@@ -65,7 +67,12 @@ def evaluate_agent(cfg: ProjectConfig, eval_inputs_path: str) -> mlflow.models.E
     return mlflow.genai.evaluate(
         predict_fn=predict_fn,
         data=eval_data,
-        scorers=[word_count_check, polite_tone_guideline, hook_in_post_guideline, scope_guideline],
+        scorers=[
+            word_count_check,
+            polite_tone_guideline,
+            hook_in_post_guideline,
+            scope_guideline,
+        ],
     )
 
 
