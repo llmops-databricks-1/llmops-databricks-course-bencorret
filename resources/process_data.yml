@@ -18,8 +18,6 @@ resources:
 
       tasks:
         - task_key: preprocessing
-          depends_on:
-            - task_key: global-findex-data-pipeline
           environment_key: default
           notebook_task:
             notebook_path: deployment_scripts/process_data.py
