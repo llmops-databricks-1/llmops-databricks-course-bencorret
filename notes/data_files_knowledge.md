@@ -39,6 +39,3 @@ This document is only 56 pages long, which makes it a lot easier to read for the
 This is the full report. It is 342 pages long. It contains all the conclusions from the survey. It is broken down in several sections, each covering global topics like Financial access, Financial use, Financial health ...
 
 This document can be read by researchers or any individual wanting to deepen in a sepcific topic. The Executive report will not go deep enough on certain topics. But this PDF document will.
-
-### global_findex_database_2025.csv
-This csv file also contains data from the microdata database, but only 8564 records. And these records seem to be enriched with socio economical headers. This is probaby a refined and curated version of the microdata database.
