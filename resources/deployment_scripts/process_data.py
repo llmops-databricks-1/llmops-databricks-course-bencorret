@@ -108,63 +108,6 @@ def define_global_findex_documents() -> list[dict]:
             "volume_path": f"{volume_root}/csv/findex_microdata_2025/findex_microdata_2025.csv",
         },
         {
-            "id": "documentation_microdata",
-            "title": "Documentation of microdata survey",
-            "authors": authors,
-            "summary": (
-                "PDF documentation for all columns in the microdata database. Each "
-                "cryptic column name (e.g. 'con31e') is described with its label, the "
-                "question asked to respondents, and the possible answer values. "
-                "Required to interpret the microdata CSV."
-            ),
-            "published": "2025-01-01 00:00",
-            "updated": None,
-            "categories": "Data Documentation, Survey Methodology, Financial Inclusion",
-            "document_type": "PDF",
-            "primary_category": "Data Documentation",
-            "ingestion_timestamp": ingestion_timestamp,
-            "processed": None,
-            "volume_path": f"{volume_root}/pdf/documentation_microdata/documentation_microdata.pdf",
-        },
-        {
-            "id": "Global_findex_-_The_little_data_book",
-            "title": "Global findex - The little data book",
-            "authors": authors,
-            "summary": (
-                "A compact PDF presenting aggregated financial inclusion KPIs from the "
-                "2025 Global Findex survey, broken down by income category, world "
-                "region, and individual country. Designed for quick cross-country and "
-                "cross-region comparisons."
-            ),
-            "published": "2025-01-01 00:00",
-            "updated": None,
-            "categories": "Financial Inclusion, Regional Analysis, Country Comparisons, Income Categories",
-            "document_type": "PDF",
-            "primary_category": "Financial Inclusion",
-            "ingestion_timestamp": ingestion_timestamp,
-            "processed": None,
-            "volume_path": f"{volume_root}/pdf/Global_findex_-_The_little_data_book/Global_findex_-_The_little_data_book.pdf",
-        },
-        {
-            "id": "Global_findex_2025_-_Executive_report",
-            "title": "Global findex 2025 - Executive report",
-            "authors": authors,
-            "summary": (
-                "A 56-page executive summary of the 2025 Global Findex survey findings. "
-                "Covers key topics including mobile phone ownership among adults, gender "
-                "gaps in account ownership, savings per adult, and digital merchant "
-                "payments. Aimed at a broad audience."
-            ),
-            "published": "2025-01-01 00:00",
-            "updated": None,
-            "categories": "Financial Inclusion, Digital Payments, Gender Equality, Mobile Banking",
-            "document_type": "PDF",
-            "primary_category": "Financial Inclusion",
-            "ingestion_timestamp": ingestion_timestamp,
-            "processed": None,
-            "volume_path": f"{volume_root}/pdf/Global_findex_2025_-_Executive_report/Global_findex_2025_-_Executive_report.pdf",
-        },
-        {
             "id": "Global_findex_database_2025",
             "title": "Global findex database 2025",
             "authors": authors,
@@ -182,25 +125,6 @@ def define_global_findex_documents() -> list[dict]:
             "ingestion_timestamp": ingestion_timestamp,
             "processed": None,
             "volume_path": f"{volume_root}/pdf/Global_findex_database_2025/Global_findex_database_2025.pdf",
-        },
-        {
-            "id": "global_findex_database_2025.csv",
-            "title": "Global findex 2025 curated dataset",
-            "authors": authors,
-            "summary": (
-                "A curated and enriched CSV derived from the microdata database, "
-                "containing 8,564 records with additional socio-economic headers. "
-                "Likely a refined subset of the full microdata intended for easier "
-                "analytical use."
-            ),
-            "published": "2025-01-01 00:00",
-            "updated": None,
-            "categories": "Survey data, Enriched data, Mobile integration, Financial integration",
-            "document_type": "CSV",
-            "primary_category": "Survey data",
-            "ingestion_timestamp": ingestion_timestamp,
-            "processed": None,
-            "volume_path": f"{volume_root}/csv/Global_findex_database_2025/Global_findex_database_2025.csv",
         },
     ]
 
