@@ -1,10 +1,14 @@
 resources:
   jobs:
-    pdf_parsing_ai_parse_job:
-      name: pdf-parsing-ai-parse
+    data-pipeline:
+      name: global-findex-data-pipeline
+      schedule:
+        quartz_cron_expression: "0 0 6 * * ?"
+        timezone_id: "Europe/Amsterdam"
+        pause_status: ${var.schedule_pause_status}
       tags:
         project_name: "global-findex-curator"
-
+        environment: ${bundle.target}
       environments:
         - environment_key: default
           spec:
@@ -13,11 +17,10 @@ resources:
               - ../dist/*.whl
 
       tasks:
-        - task_key: run_notebook
+        - task_key: preprocessing
           environment_key: default
           notebook_task:
-            notebook_path: ../notebooks/2.2_pdf_parsing_ai_parse.py
+            notebook_path: deployment_scripts/process_data.py
             base_parameters:
               env: ${bundle.target}
               git_sha: "${var.git_sha}"
-              run_id: "{{job.run_id}}"

@@ -1,3 +1,28 @@
+# Project Configuration for LLMOps Course
+system_prompt: |
+  You are a research assistant specialized in answering questions about the World Bank's Findex survey.
+  You will help fellow researchers to understand the data of the Findex survey. You will help them
+  analyse findings already recorded in the Findex report documents. And make new findings, by combining exiting knowledge and doing research
+  on the survey's data.
+
+  Your role is to:
+  1. Find out if the user needs to research existing reports or
+    perform new analysis on the survey data.
+  2. Search for relevant reports using the vector search tool
+    based on the user's topic.
+  3. Search for survey headers descriptions using the vector search tool,
+    to help formulate better prompts for the Genie space.
+  4. Query the Genie space to perform data analysis on the survey results.
+  5. Generate answers to the user's questions based on the findings from the reports
+    and the optional data analysis.
+
+  Always ground your answers based findings from the tools
+  available to you.
+
+  If conversation history is provided, use it to maintain continuity
+  with the user's previous requests — refer back to earlier topics,
+  refine previous suggestions, and avoid repeating yourself.
+
 dev:
   catalog: mlops_dev
   schema: corretco
@@ -7,7 +32,9 @@ dev:
   warehouse_id: 9c9d5a71fb3773e4
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: "01f12b4f1c881997a13d98811a9617ca"
-  usage_policy_id: 686c435d-90af-4c40-9ca4-442d4a3d8899
+  usage_policy_id: 6f66ddee-a8d4-4a2b-b08d-d225eb6feb95
+  lakebase_project_id: null
+  experiment_name: /Shared/findex-research-assistant
 
 acc:
   catalog: mlops_acc
@@ -18,7 +45,9 @@ acc:
   warehouse_id: 9c9d5a71fb3773e4
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
-  usage_policy_id: 686c435d-90af-4c40-9ca4-442d4a3d8899
+  usage_policy_id: 6f66ddee-a8d4-4a2b-b08d-d225eb6feb95
+  lakebase_project_id: null
+  experiment_name: /Shared/findex-research-assistant
 
 prd:
   catalog: mlops_prd
@@ -29,7 +58,9 @@ prd:
   warehouse_id: 9c9d5a71fb3773e4
   vector_search_endpoint: llmops_course_vs_endpoint
   genie_space_id: null
-  usage_policy_id: 686c435d-90af-4c40-9ca4-442d4a3d8899
+  usage_policy_id: 6f66ddee-a8d4-4a2b-b08d-d225eb6feb95
+  lakebase_project_id: null
+  experiment_name: /Shared/findex-research-assistant
 
 # Model configuration
 model_config:
