@@ -1,0 +1,995 @@
+V1:
+  name: year
+  improved_col_name: year
+  label:
+  question:
+V2:
+  name: economy
+  improved_col_name: economy
+  label: Economy
+  question:
+V3:
+  name: economycode
+  improved_col_name: economy_code
+  label: Economy code
+  question:
+V4:
+  name: regionwb
+  improved_col_name: region
+  label: Regional code
+  question:
+V5:
+  name: pop_adult
+  improved_col_name: adult_population
+  label: Population 15+, 2023, WDI
+  question:
+V6:
+  name: wpid_random
+  improved_col_name: respondent_id
+  label: Gallup World Poll identifier
+  question:
+V7:
+  name: wgt
+  improved_col_name: weight
+  label: Weight
+  question:
+V8:
+  name: female
+  improved_col_name: is_female
+  label: Respondent is female
+  question:
+V9:
+  name: age
+  improved_col_name: age
+  label: Respondent age
+  question:
+V10:
+  name: educ
+  improved_col_name: education_level
+  label: Respondent education level
+  question:
+V11:
+  name: inc_q
+  improved_col_name: income_quintile
+  label: Within-economy household income quintile
+  question:
+V12:
+  name: emp_in
+  improved_col_name: in_workforce
+  label: Respondent is in workforce
+  question:
+V13:
+  name: urbanicity
+  improved_col_name: lives_in_rural_area
+  label: Respondent lives in rural area
+  question:
+V14:
+  name: account_fin
+  improved_col_name: has_bank_account
+  label: Has an account at a financial institution
+  question:
+V15:
+  name: account_mob
+  improved_col_name: has_mobile_money_account
+  label: Has a mobile money account
+  question:
+V16:
+  name: account
+  improved_col_name: has_any_account
+  label: Has an account
+  question:
+V17:
+  name: dig_account
+  improved_col_name: has_digital_account
+  label: Has a digitally enabled account
+  question:
+V18:
+  name: borrowed
+  improved_col_name: borrowed_any
+  label: Borrowed
+  question:
+V19:
+  name: saved
+  improved_col_name: saved_any
+  label: Saved
+  question:
+V20:
+  name: receive_wages
+  improved_col_name: received_wages
+  label: Received a wage payment
+  question:
+V21:
+  name: receive_transfers
+  improved_col_name: received_gov_transfer
+  label: Received a government transfer payment
+  question:
+V22:
+  name: receive_pensions
+  improved_col_name: received_gov_pension
+  label: Received a government pension payment
+  question:
+V23:
+  name: receive_agriculture
+  improved_col_name: received_ag_payment
+  label: Received a payment for the sale of agricultural goods
+  question:
+V24:
+  name: merchantpay_dig
+  improved_col_name: made_digital_merchant_payment
+  label: Made a digital merchant payment
+  question:
+V25:
+  name: pay_utilities
+  improved_col_name: paid_utilities
+  label: Paid a utility bill
+  question:
+V26:
+  name: domestic_remittances
+  improved_col_name: any_domestic_remittance
+  label: Made or received a domestic remittance payment
+  question:
+V27:
+  name: anydigpayment
+  improved_col_name: any_digital_payment
+  label: Made or received a digital payment
+  question:
+V28:
+  name: fin2
+  improved_col_name: has_debit_card
+  label: Has a debit card
+  question: "[Insert local terminology for a/an ATM/debit card] is a card connected to an account that allows you to withdraw money or buy things, and the money is taken out of that account right away. Do you, personally, have [insert local terminology for a/an ATM/debit card]? Yes or no?"
+V29:
+  name: fin3
+  improved_col_name: used_card_or_phone_for_account
+  label: Used a card or mobile phone to access account
+  question: "Thinking ONLY about your account at a bank or similar financial institution, in the past 12 months, did you use a card or a mobile phone to make payments, buy things, or to send or receive money using your account? Yes or no?"
+V30:
+  name: fin4
+  improved_col_name: opened_account_for_wage_or_govt
+  label: Opened first account to receive a wage or salary payment or money from the government
+  question: "Thinking about the first account you opened, did you open it to receive a wage or salary payment or money from the government? Yes or no?"
+V31:
+  name: fin5
+  improved_col_name: account_deposit_frequency
+  label: Frequency of money deposited into accounts
+  question: "In a typical month, how often is money deposited into your personal account(s)? This includes cash or electronic deposits, or any time money is put into your account. Weekly, monthly, or less than once a month?"
+V32:
+  name: fin6
+  improved_col_name: account_withdrawal_frequency
+  label: Frequency of money sent or taken out of accounts
+  question: "In a typical month, how often is money sent from or taken out of your personal account(s)? This includes cash withdrawals or electronic payments. Weekly, monthly, or less than once a month?"
+V33:
+  name: fin7
+  improved_col_name: any_account_activity
+  label: Any deposits or withdrawals
+  question: "In the past 12 months, has money been put into or taken out of your personal account(s)?"
+V34:
+  name: fin8
+  improved_col_name: stores_money_in_account
+  label: Store money in account
+  question: "Is there typically any money kept in your personal account(s)?"
+V35:
+  name: fin9a
+  improved_col_name: receives_digital_balance_info
+  label: Receive account balance information using a mobile phone or the internet
+  question: "In the past 12 months, have you received any information about your account balance from your bank, such as through email, SMS, or a text message on your mobile phone?"
+V36:
+  name: fin9b
+  improved_col_name: checks_balance_digitally
+  label: Check account balance using a mobile phone or the internet
+  question: "In the past 12 months, have you personally checked the balance of the account(s) you have at a bank or similar financial institution using a mobile phone or computer? Yes or no?"
+V37:
+  name: fin10
+  improved_col_name: has_credit_card
+  label: Has a credit card
+  question: "A credit card is a card that allows you to borrow money in order to make payments or buy things, and you can pay the balance off later. Do you, personally, have a credit card?"
+V38:
+  name: fin11_0
+  improved_col_name: has_prepaid_card
+  label: Has a card that you can add money to and use to send and receive money or make purchases at a variety of places
+  question: "Do you have a card that you can add money to and use to send and receive money or make purchases at a variety of places?"
+V39:
+  name: fin11_1
+  improved_col_name: ever_had_bank_account
+  label: Ever had an account at a bank or similar financial institution
+  question: "Have you ever had an account at a bank or similar financial institution?"
+V40:
+  name: fin11_2
+  improved_col_name: can_use_account_without_help
+  label: Could use account without help
+  question: "If you were to open an account at a bank or a similar financial institution, do you think you could use it by yourself, or would you need the help of another person?"
+V41:
+  name: fin11a
+  improved_col_name: no_account_too_far
+  label: "Reason for no account: too far"
+  question: "Are any of the following statements reasons why you do not have an account at a bank or similar financial institution? Please answer yes or no to each of the following: Financial institutions are too far away"
+V42:
+  name: fin11b
+  improved_col_name: no_account_fees_too_expensive
+  label: "Reason for no account: fees too expensive"
+  question: "Are any of the following statements reasons why you do not have an account at a bank or similar financial institution? Please answer yes or no to each of the following: Financial service fees are too expensive"
+V43:
+  name: fin11c
+  improved_col_name: no_account_lack_documentation
+  label: "Reason for no account: lack documentation"
+  question: "Are any of the following statements reasons why you do not have an account at a bank or similar financial institution? Please answer yes or no to each of the following: You don't have the necessary documentation"
+V44:
+  name: fin11d
+  improved_col_name: no_account_lack_money
+  label: "Reason for no account: lack money"
+  question: "Are any of the following statements reasons why you do not have an account at a bank or similar financial institution? Please answer yes or no to each of the following: You don't have enough money to open an account"
+V45:
+  name: fin11e
+  improved_col_name: no_account_family_has_one
+  label: "Reason for no account: family member already has one"
+  question: "Are any of the following statements reasons why you do not have an account at a bank or similar financial institution? Please answer yes or no to each of the following: Someone else in the family already has an account"
+V46:
+  name: fin11f
+  improved_col_name: no_account_lack_trust
+  label: "Reason for no account: lack trust"
+  question: "Are any of the following statements reasons why you do not have an account at a bank or similar financial institution? Please answer yes or no to each of the following: You don't trust financial institutions"
+V47:
+  name: fin13_1
+  improved_col_name: mobile_money_meets_needs
+  label: Mobile money meets financial needs
+  question: "Does your mobile money account meet all your financial needs, or would you also like to open an account at a bank?"
+V48:
+  name: fin13a
+  improved_col_name: mobile_money_deposit_frequency
+  label: Frequency of money deposited into mobile money accounts
+  question: "In a typical month, how often is money deposited into your mobile money account(s)? This includes cash or electronic deposits, or any time money is put into your account. Weekly, monthly, or less than once a month?"
+V49:
+  name: fin13b
+  improved_col_name: mobile_money_send_frequency
+  label: Frequency of money sent from mobile money accounts
+  question: "In a typical month, how often is money sent from your mobile money account(s)? Weekly, monthly, or less than once a month?"
+V50:
+  name: fin13c
+  improved_col_name: mobile_money_withdrawal_frequency
+  label: Frequency of money taken out of mobile money accounts
+  question: "In a typical month, how many times is money taken out of your mobile money account(s)? Weekly, monthly, or less than once a month?"
+V51:
+  name: fin13d
+  improved_col_name: stores_money_in_mobile_money
+  label: Store money in mobile money account
+  question: "Do you typically keep any money in your mobile money account?"
+V52:
+  name: fin13e
+  improved_col_name: asked_for_mobile_money_pin
+  label: Asked for mobile money PIN or password
+  question: "Has anyone you don't know ever sent you a message on your phone or called you asking for the PIN or password to your mobile money account?"
+V53:
+  name: fin13f
+  improved_col_name: sent_money_to_wrong_number
+  label: Sent money to the wrong number
+  question: "Have you ever sent money from your mobile money account to the wrong number?"
+V54:
+  name: fin13f_1
+  improved_col_name: recovered_wrong_number_money
+  label: Received money back after sending to the wrong number
+  question: "Were you able to get back the money you sent to the wrong number?"
+V55:
+  name: fin14a
+  improved_col_name: no_mobile_money_too_far
+  label: "Reason for no mobile money account: too far"
+  question: "Are any of the following statements reasons why you do not have a mobile money account? Please answer yes or no to each of the following: Mobile money agents are too far away"
+V56:
+  name: fin14b
+  improved_col_name: no_mobile_money_too_expensive
+  label: "Reason for no mobile money account: too expensive"
+  question:
+V57:
+  name: fin14c
+  improved_col_name: no_mobile_money_lack_documentation
+  label: "Reason for no mobile money account: lack documentation"
+  question:
+V58:
+  name: fin14d
+  improved_col_name: no_mobile_money_lack_money
+  label: "Reason for no mobile money account: lack of money"
+  question:
+V59:
+  name: fin14e
+  improved_col_name: no_mobile_money_security_concerns
+  label: "Reason for no mobile money account: worried about security"
+  question:
+V60:
+  name: fin15
+  improved_col_name: used_agent_for_mobile_money
+  label: Used an agent or someone else to make a mobile money payment
+  question: "Do you ever use an agent or ask someone else to make a mobile money payment for you?"
+V61:
+  name: fin16
+  improved_col_name: ever_had_mobile_money_account
+  label: Ever had a mobile money account
+  question: "Have you ever had a mobile money account such as [insert local terminology for mobile money products]?"
+V62:
+  name: fin17a
+  improved_col_name: saved_at_bank
+  label: Saved at a bank or similar financial institution
+  question: "In the past 12 months, have you saved or set aside any money by: using an account at a bank or similar financial institution?"
+V63:
+  name: fin17b
+  improved_col_name: saved_using_mobile_money
+  label: Saved using a mobile money account
+  question: "In the past 12 months, have you saved or set aside any money by: using a mobile money account?"
+V64:
+  name: fin17c
+  improved_col_name: saved_using_savings_club
+  label: Saved using a savings club or a person outside the family
+  question: "In the past 12 months, have you saved or set aside any money by: using an informal savings group/club such as [insert local terminology for savings group/club] or a person outside the family?"
+V65:
+  name: fin17d
+  improved_col_name: formal_saving_frequency
+  label: Formal saving frequency
+  question: "In a typical month, how often do you save or set aside money into an account? Weekly, monthly, or less than once a month?"
+V66:
+  name: fin17e
+  improved_col_name: received_interest
+  label: Received interest
+  question: "In the past 12 months, did you receive interest or additional money for the savings in your account?"
+V67:
+  name: fin17f
+  improved_col_name: saved_formally_for_old_age
+  label: Saved formally for old age
+  question: "In the past 12 months, have you saved or set aside any money for your old age?"
+V68:
+  name: fin18
+  improved_col_name: saved_for_any_reason
+  label: Saved for any reason
+  question: "In the past 12 months, have you saved or set aside any money for any reason?"
+V69:
+  name: fin19
+  improved_col_name: paid_insurance_regularly
+  label: Made regular payments to insurance agent or company
+  question: "In the past 12 months, have you made any regular payments to an insurance agent or company?"
+V70:
+  name: fin20
+  improved_col_name: applied_loan_via_mobile
+  label: Applied for a loan using a mobile phone
+  question: "In the past 12 months, have you applied for a loan using a mobile phone?"
+V71:
+  name: fin21
+  improved_col_name: received_mobile_loan
+  label: Received loan applied for using a mobile phone
+  question: "Did you receive this loan?"
+V72:
+  name: fin22a
+  improved_col_name: borrowed_from_bank
+  label: Borrowed from a formal bank or similar financial institution
+  question: "In the past 12 months, have you borrowed any money from a bank or a similar financial institution?"
+V73:
+  name: fin22a_1
+  improved_col_name: borrowed_from_mobile_money
+  label: Borrowed from a mobile money provider
+  question: "In the past 12 months, have you borrowed any money from your mobile money provider?"
+V74:
+  name: fin22b
+  improved_col_name: borrowed_from_friends_family
+  label: Borrowed from friends or family
+  question: "In the past 12 months, have you borrowed any money from family, relatives, or friends?"
+V75:
+  name: fin22c
+  improved_col_name: borrowed_from_savings_club
+  label: Borrowed from an informal savings club
+  question: "In the past 12 months, have you borrowed any money from informal savings group/club such as [insert local terminology for savings group/club]?"
+V76:
+  name: fin22d
+  improved_col_name: borrowed_for_medical
+  label: Borrowed for health or medical purposes
+  question: "In the past 12 months, have you borrowed money for health or medical purposes?"
+V77:
+  name: fin22e
+  improved_col_name: borrowed_for_business
+  label: Borrowed to start or operate a business
+  question: "In the past 12 months, have you borrowed money to start or operate a business?"
+V78:
+  name: fin22f
+  improved_col_name: purchased_food_on_credit
+  label: Purchased food on credit
+  question: "In the past 12 months, did you ever buy household food but pay for it at a later date?"
+V79:
+  name: fin22g
+  improved_col_name: used_credit_card
+  label: Used a credit card
+  question: "In the past 12 months, have you used your credit card?"
+V80:
+  name: fin22h
+  improved_col_name: paid_credit_card_in_full
+  label: Paid off all credit card balances in full by their due date
+  question: "In the past 12 months, did you pay off all your credit card balances in full by their due date?"
+V81:
+  name: fin23
+  improved_col_name: borrowed_for_any_reason
+  label: Borrowed money for any reason
+  question: "In the past 12 months, have you borrowed money from any source for any reason?"
+V82:
+  name: fin24
+  improved_col_name: emergency_funds_main_source
+  label: Main source of emergency money in 30 days
+  question: "Now, imagine that you have an emergency and you need to pay [insert 1/20 of local GNI per capita]. What would be the MAIN source of money that you would use to come up with [insert 1/20 of local GNI per capita] within the next 30 days? Please choose only one response from the following. 1. Savings 2. Family, relatives, or friends 3. Money from working 4. A loan from a financial institution, an employer, or a private lender 5. Selling something you own such as jewelrey 6. Some other source 7. I could not come up with the money"
+V83:
+  name: fin24a
+  improved_col_name: emergency_funds_difficulty
+  label: Difficulty of emergency funds in 30 days
+  question: "How difficult would it be for you to come up with [insert 1/20 of local GNI per capita] within the next 30 days? Would it be very difficult, somewhat difficult, or not difficult at all?"
+V84:
+  name: fin24b
+  improved_col_name: income_loss_coverage_duration
+  label: How long household could cover expenses if main source of income was lost
+  question: "Suppose your household lost its main source of income. About how long could you cover expenses by using savings, borrowing, selling something you own, seeking help from family and friends, or through some other way? Less than two weeks, about one month, about two months, or more than two months?"
+V85:
+  name: fin24c
+  improved_col_name: experienced_natural_disaster
+  label: Experienced a natural disaster or severe weather event
+  question: "In the PAST THREE YEARS, have you personally experienced a natural disaster or severe weather event, such as [insert local examples of natural disasters]?"
+V86:
+  name: fin24d1
+  improved_col_name: disaster_impact_income_loss
+  label: "Natural disaster in the past three years: Income lost or unable to work, by self"
+  question:
+V87:
+  name: fin24d2
+  improved_col_name: disaster_impact_property_damage
+  label: "Natural disaster in the past three years: Damage to home or livestock"
+  question:
+V88:
+  name: fin24d3
+  improved_col_name: disaster_impact_account_access
+  label: "Natural disaster in the past three years: Unable to access or use their account"
+  question:
+V89:
+  name: fin25e1
+  improved_col_name: digital_payment_cleaning_supplies
+  label: Use a mobile phone or card to pay for household cleaning supplies
+  question:
+V90:
+  name: fin25e2
+  improved_col_name: digital_in_store_payment
+  label: Used a mobile phone or a card to pay for an in-store purchase
+  question:
+V91:
+  name: fin25e3
+  improved_col_name: digital_in_store_frequency
+  label: Frequency of digital in-store merchant payments
+  question:
+V92:
+  name: fin25e4
+  improved_col_name: cash_only_in_store_reason
+  label: Main reason for only using cash for in-store merchant payments
+  question:
+V93:
+  name: fin26a
+  improved_col_name: made_digital_bill_payment
+  label: Used a mobile phone or computer to make a bill payment
+  question: "In the past 12 months, have you, personally used a mobile phone or computer to make a bill payment?"
+V94:
+  name: fin26b
+  improved_col_name: made_online_purchase
+  label: Used a mobile phone or the internet to buy something online
+  question: "In the past 12 months, have you, personally used a mobile phone or computer to buy something online that was delivered to you?"
+V95:
+  name: fin27
+  improved_col_name: online_purchase_payment_mode
+  label: Online purchase mode of payment
+  question: "Do you usually pay online or in cash when the order is delivered?"
+V96:
+  name: fh1
+  improved_col_name: sent_domestic_remittance
+  label: Made a domestic remittance
+  question: "In the past 12 months, have you given or sent money to relatives or friends living in a different city inside [insert economy name]? This can be money you brought yourself or sent in some other way."
+V97:
+  name: fin28
+  improved_col_name: sent_digital_domestic_remittance
+  label: Made a digital domestic remittance
+  question: "In the past 12 months, have you given or sent money to relatives or friends living in a different city inside [insert economy name] directly from an account or phone? Yes or no?"
+V98:
+  name: fh2
+  improved_col_name: received_domestic_remittance
+  label: Received a domestic remittance
+  question: "In the past 12 months, did you receive money from relatives or friends living in a different city inside [insert economy name]? This can be money you were directly given or that you received in some other way."
+V99:
+  name: fin29
+  improved_col_name: received_digital_domestic_remittance
+  label: Received a digital domestic remittance
+  question: "In the past 12 months, have you, personally, received money from relatives or friends living in a different city inside [insert economy name] directly into an account or phone? Yes or no?"
+V100:
+  name: fh2a
+  improved_col_name: received_international_remittance
+  label: Received an international remittance payment
+  question: "In the past 12 months, did you receive money from relatives or friends living in a different country? Yes or no?"
+V101:
+  name: fin30
+  improved_col_name: made_utility_payment
+  label: Made a utility payment
+  question: "In the past 12 months, have you, personally, made regular payments for electricity, water, or trash collection? Yes or no?"
+V102:
+  name: fin31a
+  improved_col_name: utility_payment_via_bank
+  label: Made a utility payment using a bank account
+  question: "In the past 12 months, have you, personally, made regular payments for electricity, water, or trash collection using an account at a bank or similar financial institution?"
+V103:
+  name: fin31b
+  improved_col_name: utility_payment_via_mobile
+  label: Made a utility payment using a mobile phone
+  question: "In the past 12 months, have you, personally, made regular payments for electricity, water, or trash collection using a mobile phone to make a payment?"
+V104:
+  name: fin31c
+  improved_col_name: utility_payment_cash_to_agent
+  label: Made a utility payment by handing cash to a bank agent or staff
+  question: "In the past 12 months, have you personally made a payment for electricity, water, or trash collection by handing cash to bank staff or an agent? Yes or no?"
+V105:
+  name: fin31d
+  improved_col_name: utility_payment_cash_only
+  label: Made utility payments exclusively in cash
+  question: "Do you only use cash to pay for electricity, water, or trash collection?"
+V106:
+  name: fin32
+  improved_col_name: received_wage_payment
+  label: Received a wage payment
+  question: "In the past 12 months, have you received any salary or wages from an employer?"
+V107:
+  name: fin33
+  improved_col_name: employed_in_public_sector
+  label: Employed by the government, military, or public sector
+  question: "In the past 12 months, have you been employed by the government, military, or public sector? Yes or no?"
+V108:
+  name: fin34a
+  improved_col_name: wage_paid_to_bank
+  label: Received wage payment into a bank or similar institution account
+  question: "In the past 12 months, has an employer paid your salary or wages directly into an account at a bank or similar financial institution?"
+V109:
+  name: fin34b
+  improved_col_name: wage_paid_via_mobile
+  label: Received a wage payment through a mobile phone
+  question: "In the past 12 months, has an employer paid your salary or wages through a mobile phone?"
+V110:
+  name: fin34c
+  improved_col_name: wage_paid_in_cash
+  label: Received a wage payment in cash
+  question: "In the past 12 months, has an employer paid your salary or wages in cash?"
+V111:
+  name: fin34d
+  improved_col_name: wage_paid_to_card
+  label: Received a wage payment into a card
+  question: "In the past 12 months, has an employer paid your salary or wages to a card?"
+V112:
+  name: fin35
+  improved_col_name: paid_fee_to_withdraw_wages
+  label: Paid an unexpected fee to withdraw wages
+  question: "Have you ever paid a fee that was more than you expected when you withdrew or took out your salary or wages from your account?"
+V113:
+  name: fin36
+  improved_col_name: wage_withdrawal_mode
+  label: Mode of wage withdrawal from account
+  question: "When your employer has paid your salary or wages into your account, do you typically take out all this money as cash at one time or do you leave some of this money in your account?"
+V114:
+  name: fin36a
+  improved_col_name: wage_withdrawer
+  label: Person withdrawing wage from account
+  question: "Did you take your salary or wages out of your account yourself or did a friend or family member take out the money for you?"
+V115:
+  name: fin37
+  improved_col_name: received_gov_support
+  label: Received financial support from the government
+  question: "In the past 12 months, have you, personally, received any financial support from the government? This money could include payments for educational or medical expenses, unemployment benefits or subsidy payments. Please do NOT include wages or any payments related to work."
+V116:
+  name: fin38
+  improved_col_name: received_public_pension
+  label: Received a public sector pension
+  question: "In the past 12 months, have you personally received a pension from the government, military, or public sector?"
+V117:
+  name: fin39a
+  improved_col_name: gov_money_to_bank
+  label: Received money from the government into a bank account
+  question: "In the past 12 months, have you received this money from the government in any of the following ways? You received payments directly into an account at a bank or similar financial institution"
+V118:
+  name: fin39b
+  improved_col_name: gov_money_via_mobile
+  label: Received money from the government through a mobile phone
+  question: "In the past 12 months, have you received this money from the government in any of the following ways? You received payments through a mobile phone"
+V119:
+  name: fin39c
+  improved_col_name: gov_money_in_cash
+  label: Received money from the government only in cash
+  question: "In the past 12 months, have you received any money from the government in cash?"
+V120:
+  name: fin39d
+  improved_col_name: gov_money_to_card
+  label: Received money from the government to a card
+  question: "In the past 12 months, have you received any money from the government to a card?"
+V121:
+  name: fin40
+  improved_col_name: gov_money_withdrawal_mode
+  label: Mode of government money withdrawal from account
+  question: "When you receive money from the government, do you typically take out all this money as cash at one time, or do you leave some of this money in your account?"
+V122:
+  name: fin41
+  improved_col_name: paid_fee_to_withdraw_gov_money
+  label: Paid an unexpected fee to withdraw government money from account
+  question: "Have you ever paid a fee that was more than you expected when you withdrew or took the money from the government out of your account?"
+V123:
+  name: fin41a
+  improved_col_name: gov_money_withdrawer
+  label: Person withdrawing money from the government from account
+  question: "Did you take the money you received from the government out of your account yourself or did a friend or family member take out the money for you?"
+V124:
+  name: fin42
+  improved_col_name: received_agricultural_payment
+  label: Received an agricultural payment
+  question: "In the past 12 months, have you personally received money from any source for the sale of agricultural products, crops, produce, or livestock?"
+V125:
+  name: fin43a
+  improved_col_name: ag_payment_to_bank
+  label: Received an agricultural payment into a bank account
+  question: "In the past 12 months, have you received money for the sale of agricultural products, crops, produce, or livestock in any of the following ways? You received payments directly into an account at a bank or similar financial institution"
+V126:
+  name: fin43b
+  improved_col_name: ag_payment_via_mobile
+  label: Received an agricultural payment through a mobile phone
+  question: "In the past 12 months, have you received money for the sale of agricultural products, crops, produce, or livestock in any of the following ways? You received payments through a mobile phone"
+V127:
+  name: fin43c
+  improved_col_name: ag_payment_in_cash
+  label: Received an agricultural payment only in cash
+  question: "In the past 12 months, have you received money for the sale of agricultural products, crops, produce, or livestock in cash?"
+V128:
+  name: fin43d
+  improved_col_name: ag_payment_to_card
+  label: Received an agricultural payment into a card
+  question: "In the past 12 months, have you received money for the sale of agricultural products, crops, produce, or livestock to a card?"
+V129:
+  name: fin44
+  improved_col_name: uses_digital_for_farming_info
+  label: Use phone or internet to access weather or farming information
+  question: "Do you use a phone or the Internet to access information such as weather updates, pest control, or farming tips?"
+V130:
+  name: fin45
+  improved_col_name: greatest_financial_worry
+  label: Greatest financial worry
+  question: "Which of the following financial issues are you MOST worried about? Please choose only one option. Are you most worried about not having enough money...? 1. For your old age 2. For your business 3. For medical costs in case of a serious illness or accident 4.For monthly expenses, such as food, housing, or bills 5. For school or education fees 6. Some other reason"
+V131:
+  name: internet_use
+  improved_col_name: is_internet_user
+  label: Used the internet within the past three months
+  question:
+V132:
+  name: con1
+  improved_col_name: has_mobile_phone
+  label: Have a mobile phone
+  question: "Do you have a mobile phone that you use to make and receive personal calls?"
+V133:
+  name: con2a
+  improved_col_name: no_phone_lack_money
+  label: "Reason for no phone: lack of money"
+  question: "We would like to understand why you do not own a mobile phone. Are any of the following reasons why you do not have a mobile phone? Please answer yes or no: You don't have enough money to buy a mobile phone"
+V134:
+  name: con2b
+  improved_col_name: no_phone_minutes_expensive
+  label: "Reason for no phone: mobile minutes are too expensive"
+  question: "We would like to understand why you do not own a mobile phone. Are any of the following reasons why you do not have a mobile phone? Please answer yes or no: Buying mobile minutes is too expensive"
+V135:
+  name: con2c
+  improved_col_name: no_phone_no_coverage
+  label: "Reason for no mobile phone: lack of reliable coverage"
+  question: "We would like to understand why you do not own a mobile phone. Are any of the following reasons why you do not have a mobile phone? Please answer yes or no: There is not reliable coverage where you live"
+V136:
+  name: con2d
+  improved_col_name: no_phone_reading_difficulty
+  label: "Reason for no mobile phone: difficulties reading or typing"
+  question: "We would like to understand why you do not own a mobile phone. Are any of the following reasons why you do not have a mobile phone? Please answer yes or no: You have difficulties reading or typing on a mobile phone"
+V137:
+  name: con2e
+  improved_col_name: no_phone_family_disapproval
+  label: "Reason for no mobile phone: family or community disapproval"
+  question: "We would like to understand why you do not own a mobile phone. Are any of the following reasons why you do not have a mobile phone? Please answer yes or no: People in your family or community do not approve of you using a mobile phone"
+V138:
+  name: con2f
+  improved_col_name: no_phone_safety_concerns
+  label: "Reason for no mobile phone: worried about safety or security"
+  question: "We would like to understand why you do not own a mobile phone. Are any of the following reasons why you do not have a mobile phone? Please answer yes or no: You are worried about your personal safety or security when using a mobile phone"
+V139:
+  name: con2g
+  improved_col_name: no_phone_uses_others_phone
+  label: "Reason for no mobile phone: used someone else's mobile phone"
+  question: "We would like to understand why you do not own a mobile phone. Are any of the following reasons why you do not have a mobile phone? Please answer yes or no: You use someone else's mobile phone"
+V140:
+  name: con3
+  improved_col_name: no_phone_main_reason
+  label: Main reason for not having a mobile phone
+  question: "What is the main reason you do not own a mobile phone? 1. You don't have enough money to buy a mobile phone 2. Buying mobile minutes is too expensive 3. There is not reliable coverage where you live 4. You have difficulties reading or typing on a mobile phone 5. People in your family or community do not approve of you using a mobile phone 6. You are worried about your personal safety or security when using a mobile phone 7. You use someone else's mobile phone 8. Some other reason/None of these reasons"
+V141:
+  name: con4
+  improved_col_name: used_someone_elses_phone
+  label: Used someone else's mobile phone
+  question: "Have you used someone else's mobile phone in the past 3 months?"
+V142:
+  name: con5
+  improved_col_name: borrowed_phone_type
+  label: Type of phone used when using someone else's phone
+  question: "Was the mobile phone you used a smartphone or a basic text phone?"
+V143:
+  name: con6
+  improved_col_name: used_own_sim_in_others_phone
+  label: Personal SIM card used in someone else's phone
+  question: "Did you have a personal SIM card in your name that you have used in another person's mobile phone in the past 3 months?"
+V144:
+  name: con7
+  improved_col_name: rules_using_others_phone
+  label: Rules for using someone else's phone
+  question: "Does someone, such as a family member, set rules about how you can use a mobile phone?"
+V145:
+  name: con8
+  improved_col_name: household_owns_phone
+  label: Someone in the household owns a mobile phone
+  question: "Does anyone in your household currently own a mobile phone?"
+V146:
+  name: con9
+  improved_col_name: phone_type
+  label: Type of phone
+  question: "Is the main mobile phone you use a smartphone or a basic text phone?"
+V147:
+  name: con10
+  improved_col_name: can_use_whatsapp_basic_phone
+  label: Could use whatsapp on basic phone
+  question: "Could you use WhatsApp on this basic text phone if you wanted to?"
+V148:
+  name: con11
+  improved_col_name: sim_registered_own_name
+  label: SIM registered in own name
+  question: "Is the SIM number in this mobile phone registered in your name?"
+V149:
+  name: con12
+  improved_col_name: phone_use_frequency
+  label: Mobile phone use frequency
+  question: "How frequently do you use a mobile phone? Daily, weekly, monthly, or less than once a month?"
+V150:
+  name: con13
+  improved_col_name: used_phone_past_3_months
+  label: Used a mobile phone in the past three months
+  question: "Did you use a mobile phone in the past 3 months?"
+V151:
+  name: con14
+  improved_col_name: ever_read_text_message
+  label: Read a text message
+  question: "Have you ever read a text message on a mobile phone? This can include an SMS or text message or a message on a messaging app like WhatsApp."
+V152:
+  name: con15
+  improved_col_name: understands_english_text
+  label: Can understand a text message with English letters
+  question: "Could you read and understand a text message in [insert language of interview] that is written using English letters, like \"A\", \"B\", and \"C\"? This can include an SMS or text message or a message on a messaging app like WhatsApp."
+V153:
+  name: con16
+  improved_col_name: ever_sent_text_message
+  label: Sent a text message
+  question: "Have you ever sent a text message on a mobile phone? This can include an SMS or text message or a message sent through a messaging app like WhatsApp."
+V154:
+  name: con17
+  improved_col_name: preferred_gov_communication_mode
+  label: Preferred mode of government communication
+  question: "If the government needed to communicate important news to the population, such as a message about an extreme weather event or health information, would you prefer to receive it by SMS or text message or by a phone call with a recorded voice?"
+V155:
+  name: con18
+  improved_col_name: has_phone_lock
+  label: Have a PIN or password on mobile phone
+  question: "Is there a lock on the mobile phone that you use, such as a PIN, password, or fingerprint?"
+V156:
+  name: con19
+  improved_col_name: can_change_phone_lock
+  label: Can change PIN or password
+  question: "Are you able to change the PIN or password on the mobile phone that you use without help?"
+V157:
+  name: con20
+  improved_col_name: rules_using_own_phone
+  label: Rules about using own phone
+  question: "Does someone, such as a family member, set rules about how you can use a mobile phone?"
+V158:
+  name: con21
+  improved_col_name: received_scam_message
+  label: Received scam text or call
+  question: "In the past 12 months, did you receive a phone call or SMS or text message on your mobile phone from someone you didn't know asking you to send money?"
+V159:
+  name: con22
+  improved_col_name: sent_money_to_scammer
+  label: Sent money to scammer
+  question: "Did you send the money to this person?"
+V160:
+  name: con23
+  improved_col_name: received_offensive_messages
+  label: Received unwanted or offensive messages
+  question: "In the past 12 months, have you received unwanted and offensive messages, photos or videos to your mobile phone?"
+V161:
+  name: con24
+  improved_col_name: used_internet_past_7_days
+  label: Used the internet in the past 7 days
+  question: "Have you used the Internet in the past seven days, whether on a mobile phone, a computer, or some other device?"
+V162:
+  name: con25
+  improved_col_name: used_internet_past_3_months
+  label: Used the internet in the past 3 months
+  question: "Did you use the Internet in the past 3 months?"
+V163:
+  name: con26
+  improved_col_name: internet_use_frequency
+  label: Frequency of internet use
+  question: "In a typical month, how frequently do you use the Internet? Daily, weekly, monthly, or less than once a month?"
+V164:
+  name: con27
+  improved_col_name: purchases_data_package
+  label: Purchase a data package
+  question: "Do you buy a data package to use the Internet?"
+V165:
+  name: con28
+  improved_col_name: data_package_purchase_frequency
+  label: Frequency of data package purchase
+  question: "How frequently do you buy your data package to use the Internet? Daily, weekly, monthly, or less than once a month?"
+V166:
+  name: con29
+  improved_col_name: uses_only_free_wifi
+  label: Connect to the internet only through free WiFi
+  question: "Do you connect to the Internet only through free WiFi, such as from a neighbor, a shop, or a free public WiFi area?"
+V167:
+  name: con30a
+  improved_col_name: sent_voice_message
+  label: Sent a voice message from a mobile phone
+  question: "In the past 3 months, have you personally done any of the following activities? Please answer yes or no: Sent a voice message from a mobile phone"
+V168:
+  name: con30b
+  improved_col_name: sent_photo
+  label: Sent a photo from a mobile phone
+  question: "In the past 3 months, have you personally done any of the following activities? Please answer yes or no: Sent a photo from a mobile phone"
+V169:
+  name: con30c
+  improved_col_name: used_social_media
+  label: Used social media on a mobile phone
+  question: "In the past 3 months, have you personally done any of the following activities? Please answer yes or no: Used social media, like Facebook or TikTok, on a mobile phone"
+V170:
+  name: con30d
+  improved_col_name: read_news_online
+  label: Read about news or current events online
+  question: "In the past 3 months, have you personally done any of the following activities? Please answer yes or no: Read about news or current events online"
+V171:
+  name: con30e
+  improved_col_name: accessed_education_online
+  label: Accessed educational information online
+  question: "In the past 3 months, have you personally done any of the following activities? Please answer yes or no: Accessed information online to learn, train, or educate yourself or someone else"
+V172:
+  name: con30f
+  improved_col_name: earned_money_online
+  label: Earned money online
+  question: "In the past 3 months, have you personally done any of the following activities? Please answer yes or no: Used apps or websites to earn money, for example, selling goods or services online"
+V173:
+  name: con30g
+  improved_col_name: accessed_gov_services_online
+  label: Accessed government services or searched for government information online
+  question: "In the past 3 months, have you personally done any of the following activities? Please answer yes or no: Accessed government services or searched for government information online"
+V174:
+  name: con30h
+  improved_col_name: searched_job_online
+  label: Searched or applied for a job online
+  question: "In the past 3 months, have you personally done any of the following activities? Please answer yes or no: Searched or applied for a job online"
+V175:
+  name: con31a
+  improved_col_name: no_smartphone_lack_money
+  label: "Reason for no smartphone: not enough money"
+  question: "Please tell me whether each of the following are reasons why you do NOT OWN a smartphone: You don't have enough money to buy a smartphone"
+V176:
+  name: con31b
+  improved_col_name: no_smartphone_data_expensive
+  label: "Reason for no smartphone: data plan is too expensive"
+  question: "Please tell me whether each of the following are reasons why you do NOT OWN a smartphone: Buying a mobile data plan is too expensive"
+V177:
+  name: con31c
+  improved_col_name: no_smartphone_no_coverage
+  label: "Reason for no smartphone: no reliable coverage"
+  question: "Please tell me whether each of the following are reasons why you do NOT OWN a smartphone: There is not reliable Internet coverage where you live"
+V178:
+  name: con31d
+  improved_col_name: no_smartphone_reading_difficulty
+  label: "Reason for no smartphone: difficulties reading or typing on a smartphone"
+  question: "Please tell me whether each of the following are reasons why you do NOT OWN a smartphone: You have difficulties reading or typing on a smartphone"
+V179:
+  name: con31e
+  improved_col_name: no_smartphone_family_disapproval
+  label: "Reason for no smartphone: family or community disapproval"
+  question: "Please tell me whether each of the following are reasons why you do NOT OWN a smartphone: People in your family or community do not approve of you using a smartphone"
+V180:
+  name: con31f
+  improved_col_name: no_smartphone_safety_concerns
+  label: "Reason for no smartphone: worried about safety or security"
+  question: "Please tell me whether each of the following are reasons why you do NOT OWN a smartphone: You are worried about your personal safety or security when using a smartphone"
+V181:
+  name: con31g
+  improved_col_name: no_smartphone_uses_others
+  label: "Reason for no smartphone: use someone else's smartphone"
+  question: "Please tell me whether each of the following are reasons why you do NOT OWN a smartphone: You use someone else's smartphone"
+V182:
+  name: con31h
+  improved_col_name: no_smartphone_no_need
+  label: "Reason for no smartphone: no need"
+  question: "Please tell me whether each of the following are reasons why you do NOT OWN a smartphone: You have no need for a smartphone"
+V183:
+  name: con32
+  improved_col_name: no_smartphone_main_reason
+  label: Main reason for not having a smartphone
+  question: "What is the main reason you do not own a smartphone? You don't have enough money to buy a smartphone Buying a mobile data plan is too expensive There is not reliable Internet coverage where you live You have difficulties reading or typing on a smartphone People in your family or community do not approve of you using a smartphone You are worried about your personal safety or security when using a smartphone You use someone else's smartphone You have no need for a smartphone (Some other reason/None of these reasons) (DK) (Refused)"
+V184:
+  name: fin46
+  improved_col_name: has_id
+  label: ID ownership
+  question:
+V185:
+  name: fin47
+  improved_col_name: id_misused_illegally
+  label: Foundational ID has been used without permission for illegal purposes
+  question:
+V186:
+  name: fin48a
+  improved_col_name: no_id_has_other_id
+  label: "Reason no ID: Have another ID"
+  question:
+V187:
+  name: fin48b
+  improved_col_name: no_id_no_need
+  label: "Reason no ID: Do not need an ID"
+  question:
+V188:
+  name: fin48c
+  improved_col_name: no_id_too_expensive
+  label: "Reason no ID: Too expensive"
+  question:
+V189:
+  name: fin48d
+  improved_col_name: no_id_no_documents
+  label: "Reason no ID: No documents"
+  question:
+V190:
+  name: fin48e
+  improved_col_name: no_id_travel_too_far
+  label: "Reason no ID: Travel too far"
+  question:
+V191:
+  name: fin48f
+  improved_col_name: no_id_sharing_uncomfortable
+  label: "Reason no ID: Uncomfortable sharing information"
+  question:
+V192:
+  name: fin49a
+  improved_col_name: challenge_receiving_gov_support
+  label: "Challenge: Receiving financial support from the government"
+  question:
+V193:
+  name: fin49b
+  improved_col_name: challenge_using_financial_services
+  label: "Challenge: Using financial services"
+  question:
+V194:
+  name: fin49c
+  improved_col_name: challenge_obtaining_sim_card
+  label: "Challenge: Obtaining a SIM card"
+  question:
+V195:
+  name: fin49d
+  improved_col_name: challenge_voting
+  label: "Challenge: Participating in elections"
+  question:
+V196:
+  name: fin49e
+  improved_col_name: challenge_applying_for_job
+  label: "Challenge: Applying for a job"
+  question:
+V197:
+  name: fin49f
+  improved_col_name: challenge_receiving_medical_care
+  label: "Challenge: Receiving medical care"
+  question:
+V198:
+  name: fin50
+  improved_col_name: has_online_digital_id
+  label: Online digital ID ownership
+  question:
+V199:
+  name: fin51
+  improved_col_name: digital_id_used_for_verification
+  label: Online digital ID has been used on phone or computer to confirm identity online
+  question:
