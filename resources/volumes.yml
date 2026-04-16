@@ -1,7 +1,0 @@
-# resources:
-#   volumes:
-#     global_findex_volume:
-#       catalog_name: ${var.catalog}
-#       schema_name: corretco
-#       name: global_findex_volume
-#       volume_type: MANAGED
