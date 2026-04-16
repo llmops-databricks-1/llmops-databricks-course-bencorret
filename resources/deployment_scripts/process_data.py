@@ -25,7 +25,8 @@ from pyspark.sql.types import (
 )
 
 from global_findex_curator.config import get_env, load_config
-from global_findex_curator.data_processor import DataProcessor
+from global_findex_curator.data_processor import CsvDataProcessor, DataProcessor
+from global_findex_curator.utils.common import resolve_path
 from global_findex_curator.vector_search import VectorSearchManager
 
 # COMMAND ----------
@@ -55,22 +56,16 @@ spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.{SCHEMA}")
 
 # COMMAND ----------
 
-csv_paths = [
-    f"/Volumes/{CATALOG}/{SCHEMA}/{VOLUME}/csv/findex_microdata_2025.csv",
-]
+csv_path = f"/Volumes/{CATALOG}/{SCHEMA}/{VOLUME}/csv/findex_microdata_2025.csv"
+yaml_path = resolve_path("../../notes/findex_microdata_2025_variables.yaml")
+csv_data_processor = CsvDataProcessor(
+    spark=spark,
+    config=cfg,
+    csv_path=csv_path,
+    yaml_path=yaml_path,
+)
+csv_data_processor.process()
 
-for csv_path in csv_paths:
-    table_name = csv_path.split("/")[-1].replace(".csv", "")
-    table_path = f"{CATALOG}.{SCHEMA}.{table_name}"
-    logger.info(f"Ingesting {csv_path} -> {table_path}")
-    df = spark.read.csv(csv_path, header=True, inferSchema=True)
-    (
-        df.write.format("delta")
-        .mode("overwrite")
-        .option("mergeSchema", "true")
-        .saveAsTable(table_path)
-    )
-    logger.info(f"Wrote {df.count()} rows to {table_path}")
 
 # COMMAND ----------
 

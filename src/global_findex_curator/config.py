@@ -1,11 +1,11 @@
 """Configuration management for Global FIndex Curator."""
 
-from pathlib import Path
-
 import yaml
 from pydantic import BaseModel, Field
 from pyspark.dbutils import DBUtils
 from pyspark.sql import SparkSession
+
+from global_findex_curator.utils.common import resolve_path
 
 
 class ProjectConfig(BaseModel):
@@ -111,18 +111,7 @@ def load_config(
     Returns:
         ProjectConfig instance
     """
-    # Handle relative paths from notebooks
-    if not Path(config_path).is_absolute():
-        # Try to find config in parent directories
-        current = Path.cwd()
-        for _ in range(3):  # Search up to 3 levels
-            candidate = current / config_path
-            if candidate.exists():
-                config_path = str(candidate)
-                break
-            current = current.parent
-
-    return ProjectConfig.from_yaml(config_path, env)
+    return ProjectConfig.from_yaml(resolve_path(config_path), env)
 
 
 def get_env(spark: SparkSession) -> str:
