@@ -57,7 +57,6 @@ spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.{SCHEMA}")
 
 csv_paths = [
     f"/Volumes/{CATALOG}/{SCHEMA}/{VOLUME}/csv/findex_microdata_2025.csv",
-    f"/Volumes/{CATALOG}/{SCHEMA}/{VOLUME}/csv/global_findex_database_2025.csv",
 ]
 
 for csv_path in csv_paths:
