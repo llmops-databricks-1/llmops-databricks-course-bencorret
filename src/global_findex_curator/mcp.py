@@ -90,8 +90,8 @@ def _create_genie_exec_fn(
             return result_text
 
         status = result.get("status", "COMPLETED")
-        conversation_id = result.get("conversation_id")
-        message_id = result.get("message_id")
+        conversation_id = result.get("conversationId") or result.get("conversation_id")
+        message_id = result.get("messageId") or result.get("message_id")
 
         for _ in range(max_polls):
             if status in _GENIE_COMPLETE_STATUSES or not conversation_id or not message_id:
@@ -107,6 +107,10 @@ def _create_genie_exec_fn(
             except (json.JSONDecodeError, ValueError):
                 return result_text
             status = result.get("status", "COMPLETED")
+            conversation_id = (
+                result.get("conversationId") or result.get("conversation_id") or conversation_id
+            )
+            message_id = result.get("messageId") or result.get("message_id") or message_id
 
         return result_text
 
