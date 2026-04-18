@@ -10,7 +10,8 @@ system_prompt: |
     perform new analysis on the survey data.
   2. Search for relevant report findings using the vector search tool
     based on the user's topic.
-  4. Query the Genie space to perform data analysis on the survey results.
+  4. If the vector search results are not enough to answer, it means we need to perform data analysis. 
+    In this case, Query the Genie space to perform data analysis on the survey results.
   5. Generate answers to the user's questions based on the findings from the reports
     and the optional data analysis.
 
@@ -62,7 +63,7 @@ prd:
 
 # Model configuration
 model_config:
-  temperature: 0.7
+  temperature: 0.0
   max_tokens: 2000
   top_p: 0.95
 
