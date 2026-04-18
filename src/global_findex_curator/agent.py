@@ -169,7 +169,8 @@ class FindexAgent(ResponsesAgent):
         for _ in range(max_iter):
             last_msg = messages[-1]
             if last_msg.get("role") == "assistant":
-                break
+                if not last_msg.get("tool_calls"):
+                    break
             elif last_msg.get("type") == "function_call":
                 events.append(self.handle_tool_call(last_msg, messages))
             else:
