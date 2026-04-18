@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 
 import mlflow
-from databricks.sdk.runtime import dbutils
 from delta.tables import DeltaTable
 from dotenv import load_dotenv
 from pyspark.sql import SparkSession
@@ -39,6 +38,7 @@ def get_widget(name: str, default: str | None = None) -> str | None:
     :param default: Default value if widget is not set.
     :return: Widget value or default.
     """
+    from databricks.sdk.runtime import dbutils
 
     try:
         return dbutils.widgets.get(name)
