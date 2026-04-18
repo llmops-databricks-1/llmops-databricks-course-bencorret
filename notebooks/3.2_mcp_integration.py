@@ -457,6 +457,16 @@ for tool_name in agent._tools_dict:
 
 # COMMAND ----------
 
+# Debug: inspect full tool specs as seen by the LLM
+logger.info("Full tool specs passed to the LLM:")
+logger.info("=" * 80)
+for tool in mcp_tools:
+    logger.info(f"Tool: {tool.name}")
+    logger.info(json.dumps(tool.spec, indent=2))
+    logger.info("-" * 40)
+
+# COMMAND ----------
+
 # Test agent with MCP vector search tool
 logger.info("Testing agent with MCP tools:")
 logger.info("=" * 80)
