@@ -363,9 +363,10 @@ from openai import OpenAI
 class SimpleAgent:
     """A simple agent that can call tools in a loop."""
 
-    def __init__(self, llm_endpoint: str, system_prompt: str, tools: list):
+    def __init__(self, llm_endpoint: str, system_prompt: str, tools: list, temperature: float = 0.0):
         self.llm_endpoint = llm_endpoint
         self.system_prompt = system_prompt
+        self.temperature = temperature
         self._tools_dict = {tool.name: tool for tool in tools}
         self._client = OpenAI(
             api_key=w.tokens.create(lifetime_seconds=1200).token_value,
@@ -394,6 +395,7 @@ class SimpleAgent:
                 model=self.llm_endpoint,
                 messages=messages,
                 tools=self.get_tool_specs() if self._tools_dict else None,
+                temperature=self.temperature,
             )
 
             assistant_message = response.choices[0].message
