@@ -447,7 +447,7 @@ class SimpleAgent:
 # Create agent with MCP tools
 agent = SimpleAgent(
     llm_endpoint=cfg.llm_endpoint,
-    system_prompt="You are a helpful assistant specializing in global financial inclusion data. Use the available tools to search for relevant information and answer questions.",
+    system_prompt=cfg.system_prompt,
     tools=mcp_tools,
 )
 
