@@ -260,10 +260,7 @@ class CsvDataProcessor:
 
     def _build_rename_mapping(self) -> dict[str, str]:
         """Return mapping of original column name -> improved column name."""
-        return {
-            v["name"]: v["improved_col_name"]
-            for v in self._yaml_data.values()
-        }
+        return {v["name"]: v["improved_col_name"] for v in self._yaml_data.values()}
 
     def _build_comment_mapping(self) -> dict[str, str]:
         """Return mapping of improved column name -> comment text."""
@@ -292,7 +289,9 @@ class CsvDataProcessor:
             [c for c in df.columns if c in rename_mapping and rename_mapping[c] != c],
             df,
         )
-        logger.info(f"Renamed {sum(1 for k, v in rename_mapping.items() if k != v)} columns")
+        logger.info(
+            f"Renamed {sum(1 for k, v in rename_mapping.items() if k != v)} columns"
+        )
 
         (
             df.write.format("delta")
@@ -320,7 +319,9 @@ class CsvDataProcessor:
             return
 
         comment_mapping = self._build_comment_mapping()
-        logger.info(f"Applying comments to {len(comment_mapping)} columns on {self.table_path}")
+        logger.info(
+            f"Applying comments to {len(comment_mapping)} columns on {self.table_path}"
+        )
 
         for col_name, comment_text in comment_mapping.items():
             escaped_comment = comment_text.replace("'", "\\'")

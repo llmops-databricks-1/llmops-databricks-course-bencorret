@@ -363,7 +363,9 @@ from openai import OpenAI
 class SimpleAgent:
     """A simple agent that can call tools in a loop."""
 
-    def __init__(self, llm_endpoint: str, system_prompt: str, tools: list, temperature: float = 0.0):
+    def __init__(
+        self, llm_endpoint: str, system_prompt: str, tools: list, temperature: float = 0.0
+    ):
         self.llm_endpoint = llm_endpoint
         self.system_prompt = system_prompt
         self.temperature = temperature
