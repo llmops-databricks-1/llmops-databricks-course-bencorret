@@ -1,5 +1,6 @@
 import mlflow
 from mlflow.genai.scorers import Guidelines
+from mlflow.types.responses import ResponsesAgentRequest
 
 from global_findex_curator.agent import FindexAgent
 from global_findex_curator.config import ProjectConfig
@@ -60,9 +61,9 @@ def evaluate_agent(
         eval_data = [{"inputs": {"question": line.strip()}} for line in f if line.strip()]
 
     def predict_fn(question: str) -> str:
-        request = {"input": [{"role": "user", "content": question}]}
+        request = ResponsesAgentRequest(input=[{"role": "user", "content": question}])
         result = agent.predict(request)
-        return result.output[-1].content
+        return result.output[-1]["content"]
 
     return mlflow.genai.evaluate(
         predict_fn=predict_fn,
