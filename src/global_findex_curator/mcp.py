@@ -1,5 +1,6 @@
 """MCP (Model Context Protocol) integration utilities."""
 
+import concurrent.futures
 import json
 import time
 from collections.abc import Callable
@@ -11,6 +12,20 @@ from pydantic import BaseModel
 _GENIE_QUERY_PREFIX = "query_space_"
 _GENIE_POLL_PREFIX = "poll_response_"
 _GENIE_COMPLETE_STATUSES = {"COMPLETED", "FAILED", "CANCELLED"}
+
+_DEFAULT_CALL_TIMEOUT = 120.0
+
+
+# Needed to handle timeouts when calling Genie spaces
+def _call_tool_with_timeout(client: DatabricksMCPClient, tool_name: str, arguments: dict, timeout: float) -> str:
+    """Call an MCP tool with a hard timeout, raising TimeoutError if exceeded."""
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(client.call_tool, tool_name, arguments)
+        try:
+            result = future.result(timeout=timeout)
+        except concurrent.futures.TimeoutError:
+            raise TimeoutError(f"MCP tool '{tool_name}' timed out after {timeout}s")
+    return "".join([c.text for c in result.content])
 
 
 class ToolInfo(BaseModel):
@@ -59,6 +74,7 @@ def _create_genie_exec_fn(
     w: WorkspaceClient,
     max_polls: int = 30,
     poll_interval: float = 2.0,
+    call_timeout: float = _DEFAULT_CALL_TIMEOUT,
 ) -> Callable:
     """Create an exec_fn for a Genie tool that handles async polling internally.
 
@@ -81,8 +97,7 @@ def _create_genie_exec_fn(
     def exec_fn(**kwargs: dict) -> str:
         client = DatabricksMCPClient(server_url=server_url, workspace_client=w)
 
-        response = client.call_tool(query_tool_name, kwargs)
-        result_text = "".join([c.text for c in response.content])
+        result_text = _call_tool_with_timeout(client, query_tool_name, kwargs, call_timeout)
 
         try:
             result = json.loads(result_text)
@@ -101,11 +116,12 @@ def _create_genie_exec_fn(
             ):
                 break
             time.sleep(poll_interval)
-            poll_response = client.call_tool(
+            result_text = _call_tool_with_timeout(
+                client,
                 poll_tool_name,
                 {"conversation_id": conversation_id, "message_id": message_id},
+                call_timeout,
             )
-            result_text = "".join([c.text for c in poll_response.content])
             try:
                 result = json.loads(result_text)
             except (json.JSONDecodeError, ValueError):
