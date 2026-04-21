@@ -16,7 +16,7 @@ system_prompt: |
     and the optional data analysis.
 
   Always ground your answers based findings from the tools
-  available to you. Always invoke tools via function-calling. 
+  available to you. Always invoke tools via function-calling.
   Never reply with a tool invocation written as plain text.
 
   If conversation history is provided, use it to maintain continuity

@@ -42,7 +42,9 @@ class ToolInfo(BaseModel):
         arbitrary_types_allowed = True
 
 
-def create_managed_exec_fn(server_url: str, tool_name: str, w: WorkspaceClient) -> Callable:
+def create_managed_exec_fn(
+    server_url: str, tool_name: str, w: WorkspaceClient
+) -> Callable:
     """Create an execution function for an MCP tool.
 
     Args:
@@ -120,16 +122,25 @@ async def _genie_query_and_poll(
                         return result_text
 
                     status = result.get("status", "COMPLETED")
-                    conversation_id = result.get("conversationId") or result.get("conversation_id")
+                    conversation_id = result.get("conversationId") or result.get(
+                        "conversation_id"
+                    )
                     message_id = result.get("messageId") or result.get("message_id")
 
                     for _ in range(max_polls):
-                        if status in _GENIE_COMPLETE_STATUSES or not conversation_id or not message_id:
+                        if (
+                            status in _GENIE_COMPLETE_STATUSES
+                            or not conversation_id
+                            or not message_id
+                        ):
                             break
                         await asyncio.sleep(poll_interval)
                         poll_response = await session.call_tool(
                             poll_tool_name,
-                            {"conversation_id": conversation_id, "message_id": message_id},
+                            {
+                                "conversation_id": conversation_id,
+                                "message_id": message_id,
+                            },
                         )
                         result_text = "".join([c.text for c in poll_response.content])
                         try:
@@ -138,9 +149,15 @@ async def _genie_query_and_poll(
                             return result_text
                         status = result.get("status", "COMPLETED")
                         conversation_id = (
-                            result.get("conversationId") or result.get("conversation_id") or conversation_id
+                            result.get("conversationId")
+                            or result.get("conversation_id")
+                            or conversation_id
                         )
-                        message_id = result.get("messageId") or result.get("message_id") or message_id
+                        message_id = (
+                            result.get("messageId")
+                            or result.get("message_id")
+                            or message_id
+                        )
 
             return result_text
         except BaseException as exc:
@@ -198,7 +215,7 @@ def _wrap_genie_tools(
     from the list so the LLM never sees it.
     """
     poll_tool_names = {
-        t.name[len(_GENIE_POLL_PREFIX):]: t.name
+        t.name[len(_GENIE_POLL_PREFIX) :]: t.name
         for t in tools
         if t.name.startswith(_GENIE_POLL_PREFIX)
     }
@@ -208,7 +225,7 @@ def _wrap_genie_tools(
         if tool.name.startswith(_GENIE_POLL_PREFIX):
             continue
         if tool.name.startswith(_GENIE_QUERY_PREFIX):
-            space_id = tool.name[len(_GENIE_QUERY_PREFIX):]
+            space_id = tool.name[len(_GENIE_QUERY_PREFIX) :]
             if space_id in poll_tool_names:
                 wrapped.append(
                     ToolInfo(
@@ -269,7 +286,9 @@ async def create_mcp_tools(
                 },
             }
             exec_fn = create_managed_exec_fn(server_url, mcp_tool.name, w)
-            server_tools.append(ToolInfo(name=mcp_tool.name, spec=tool_spec, exec_fn=exec_fn))
+            server_tools.append(
+                ToolInfo(name=mcp_tool.name, spec=tool_spec, exec_fn=exec_fn)
+            )
 
         tools.extend(_wrap_genie_tools(server_tools, server_url, w))
 

@@ -70,9 +70,7 @@ class FindexAgent(ResponsesAgent):
         # emits the VS call as plain text instead of a real tool_calls message.
         host = self.workspace_client.config.host
         vs_tool_name = f"{catalog}__{schema}__global_findex_index"
-        overrides = (
-            {vs_tool_name: vs_tool_description} if vs_tool_description else None
-        )
+        overrides = {vs_tool_name: vs_tool_description} if vs_tool_description else None
         tools = asyncio.run(
             create_mcp_tools(
                 w=self.workspace_client,
