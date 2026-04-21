@@ -101,4 +101,7 @@ dmypy.json
 .databricks/bundle/
 
 # Claude Code session files
-.claude/scheduled_tasks.lock
+.claude
+
+# Local files
+local_material/

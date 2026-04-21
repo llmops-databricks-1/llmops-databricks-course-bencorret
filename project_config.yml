@@ -16,7 +16,8 @@ system_prompt: |
     and the optional data analysis.
 
   Always ground your answers based findings from the tools
-  available to you.
+  available to you. Always invoke tools via function-calling. 
+  Never reply with a tool invocation written as plain text.
 
   If conversation history is provided, use it to maintain continuity
   with the user's previous requests — refer back to earlier topics,
@@ -72,6 +73,12 @@ vector_search:
   embedding_dimension: 1024
   similarity_metric: cosine
   num_results: 5
+  tool_description: |
+    A vector search-based retrieval tool to fetch Global Findex reports material.
+    This Databricks Vector Seach index contains the contents of the Global FIndex reports,
+    which can be matched with user questions. This tool can be used to check if some research
+    topics have already been covered in the reports and need no further anlytical investigations
+    using Genie Spaces.
 
 # Chunking configuration
 chunking:

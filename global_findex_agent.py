@@ -11,6 +11,7 @@ config = ModelConfig(
         "system_prompt": "prompt placeholder",
         "llm_endpoint": "databricks-gpt-oss-120b",
         "lakebase_project_id": "global-findex-agent-lakebase",
+        "vs_tool_description": None,
     }
 )
 
@@ -21,5 +22,6 @@ agent = FindexAgent(
     schema=config.get("schema"),
     genie_space_id=config.get("genie_space_id"),
     lakebase_project_id=config.get("lakebase_project_id"),
+    vs_tool_description=config.get("vs_tool_description"),
 )
 mlflow.models.set_model(agent)

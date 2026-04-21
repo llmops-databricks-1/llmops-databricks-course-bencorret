@@ -39,13 +39,6 @@ targets:
     variables:
       schedule_pause_status: PAUSED
       catalog: mlops_acc
-    resources:
-      volumes:
-        global_findex_volume:
-          catalog_name: ${var.catalog}
-          schema_name: corretco
-          name: global_findex_volume
-          volume_type: MANAGED
 
   prd:
     workspace:
@@ -54,10 +47,3 @@ targets:
     variables:
       schedule_pause_status: UNPAUSED
       catalog: mlops_prd
-    resources:
-      volumes:
-        global_findex_volume:
-          catalog_name: ${var.catalog}
-          schema_name: corretco
-          name: global_findex_volume
-          volume_type: MANAGED

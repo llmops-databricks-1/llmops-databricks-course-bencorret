@@ -45,6 +45,7 @@ class FindexAgent(ResponsesAgent):
         schema: str,
         genie_space_id: str | None = None,
         lakebase_project_id: str | None = None,
+        vs_tool_description: str | None = None,
     ):
         """Initializes the Findex Agent."""
         nest_asyncio.apply()
@@ -63,8 +64,15 @@ class FindexAgent(ResponsesAgent):
                 project_id=lakebase_project_id,
             )
 
-        # Create tools from config
+        # Create tools from config. When a vs_tool_description is provided we
+        # override the terse description the VS MCP server advertises — the
+        # richer text materially reduces the rate at which Llama-4-Maverick
+        # emits the VS call as plain text instead of a real tool_calls message.
         host = self.workspace_client.config.host
+        vs_tool_name = f"{catalog}__{schema}__global_findex_index"
+        overrides = (
+            {vs_tool_name: vs_tool_description} if vs_tool_description else None
+        )
         tools = asyncio.run(
             create_mcp_tools(
                 w=self.workspace_client,
@@ -72,6 +80,7 @@ class FindexAgent(ResponsesAgent):
                     f"{host}/api/2.0/mcp/vector-search/{catalog}/{schema}",
                     f"{host}/api/2.0/mcp/genie/{genie_space_id}",
                 ],
+                tool_description_overrides=overrides,
             )
         )
         self._tools_dict = {tool.name: tool for tool in tools}
@@ -298,6 +307,7 @@ def log_register_agent(
         "system_prompt": cfg.system_prompt,
         "llm_endpoint": cfg.llm_endpoint,
         "lakebase_project_id": cfg.lakebase_project_id,
+        "vs_tool_description": cfg.vs_tool_description,
     }
 
     test_request = {
