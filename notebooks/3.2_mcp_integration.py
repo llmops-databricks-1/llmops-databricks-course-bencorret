@@ -363,9 +363,12 @@ from openai import OpenAI
 class SimpleAgent:
     """A simple agent that can call tools in a loop."""
 
-    def __init__(self, llm_endpoint: str, system_prompt: str, tools: list):
+    def __init__(
+        self, llm_endpoint: str, system_prompt: str, tools: list, temperature: float = 0.0
+    ):
         self.llm_endpoint = llm_endpoint
         self.system_prompt = system_prompt
+        self.temperature = temperature
         self._tools_dict = {tool.name: tool for tool in tools}
         self._client = OpenAI(
             api_key=w.tokens.create(lifetime_seconds=1200).token_value,
@@ -394,6 +397,7 @@ class SimpleAgent:
                 model=self.llm_endpoint,
                 messages=messages,
                 tools=self.get_tool_specs() if self._tools_dict else None,
+                temperature=self.temperature,
             )
 
             assistant_message = response.choices[0].message
@@ -447,13 +451,23 @@ class SimpleAgent:
 # Create agent with MCP tools
 agent = SimpleAgent(
     llm_endpoint=cfg.llm_endpoint,
-    system_prompt="You are a helpful assistant specializing in global financial inclusion data. Use the available tools to search for relevant information and answer questions.",
+    system_prompt=cfg.system_prompt,
     tools=mcp_tools,
 )
 
 logger.info("✓ Agent created with MCP tools:")
 for tool_name in agent._tools_dict:
     logger.info(f"  - {tool_name}")
+
+# COMMAND ----------
+
+# Debug: inspect full tool specs as seen by the LLM
+logger.info("Full tool specs passed to the LLM:")
+logger.info("=" * 80)
+for tool in mcp_tools:
+    logger.info(f"Tool: {tool.name}")
+    logger.info(json.dumps(tool.spec, indent=2))
+    logger.info("-" * 40)
 
 # COMMAND ----------
 

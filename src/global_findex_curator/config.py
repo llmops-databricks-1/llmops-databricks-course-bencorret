@@ -1,11 +1,11 @@
 """Configuration management for Global FIndex Curator."""
 
-from pathlib import Path
-
 import yaml
 from pydantic import BaseModel, Field
 from pyspark.dbutils import DBUtils
 from pyspark.sql import SparkSession
+
+from global_findex_curator.utils.common import resolve_path
 
 
 class ProjectConfig(BaseModel):
@@ -27,6 +27,10 @@ class ProjectConfig(BaseModel):
     system_prompt: str = Field(
         default="You are a helpful AI assistant that helps users find and understand research papers.",
         description="System prompt for the agent",
+    )
+    vs_tool_description: str | None = Field(
+        None,
+        description="Description shown to the LLM for the Vector Search tool",
     )
 
     model_config = {"populate_by_name": True}
@@ -56,6 +60,9 @@ class ProjectConfig(BaseModel):
         env_config = config_data[env]
         if "system_prompt" in config_data:
             env_config["system_prompt"] = config_data["system_prompt"]
+        vs_block = config_data.get("vector_search") or {}
+        if "tool_description" in vs_block:
+            env_config["vs_tool_description"] = vs_block["tool_description"]
 
         return cls(**env_config)
 
@@ -89,6 +96,7 @@ class VectorSearchConfig(BaseModel):
     embedding_dimension: int = Field(1024, description="Embedding dimension")
     similarity_metric: str = Field("cosine", description="Similarity metric")
     num_results: int = Field(5, description="Number of results to return")
+    tool_description: str = Field("cosine", description="Tool description")
 
 
 class ChunkingConfig(BaseModel):
@@ -111,18 +119,7 @@ def load_config(
     Returns:
         ProjectConfig instance
     """
-    # Handle relative paths from notebooks
-    if not Path(config_path).is_absolute():
-        # Try to find config in parent directories
-        current = Path.cwd()
-        for _ in range(3):  # Search up to 3 levels
-            candidate = current / config_path
-            if candidate.exists():
-                config_path = str(candidate)
-                break
-            current = current.parent
-
-    return ProjectConfig.from_yaml(config_path, env)
+    return ProjectConfig.from_yaml(resolve_path(config_path), env)
 
 
 def get_env(spark: SparkSession) -> str:

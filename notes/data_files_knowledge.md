@@ -12,29 +12,6 @@ ___
 ### findex_microdata_2025.csv
 This file is refered to as the microdata database. It is the raw data. It is in fact a list of the answers of all the respondants of the global findex survey. Each row represents the metadata and the answers from the respondant. And each header is either metadat about the respondant (country, sex ...) or answers to the questions. It contains 144090 records.
 
-### documentation_microdata.pdf
-This PDF document contains descriptions and context about all the columns present in the microdata database. Columns in the microdata database have very cryptic names like "con31e". These header names are questions or metadata about the survey respondants. All of these headers are referenced in this PDF document.
-
-Example: the "con31e" field
-This field is detailed 2 times in this PDF document.
-- A first time in a table, with a label explanation + the question the respondant had to answer
-- A second time in a dedicated section about that precise header. Which explains the question and the possible answers
-
-This PDF document must be used to interpret the data present in the microdata database
-
-### Global_findex_-_The_little_data_book.pdf
-This file is a PDF document. It contains a list of tables with a few KPIs on financial inclusion, presented over income categories, region and finally all countries.
-
-This PDF is based on the microdata database. It aggregates data from the microdata database to present KPIs at income category levels, or country level ... The information present in this document is a summary for survey readers who want to make quick comparisons between region, countries, country within a region etc.
-
-### Global_findex_2025_-_Executive_report.pdf
-This PDF document contains a detailed summary of the findings of the Global Findex Survey. The data present in the microdata database was used to produce conclusion on financial inclusion topics. Among these topics are:
-- Adults owning a mobile phone
-- Gender gaps in account ownership
-- Savings per adult
-- Digital merchant payments
-This document is only 56 pages long, which makes it a lot easier to read for the great public.
-
 ### Global_findex_database_2025.pdf
 This is the full report. It is 342 pages long. It contains all the conclusions from the survey. It is broken down in several sections, each covering global topics like Financial access, Financial use, Financial health ...
 

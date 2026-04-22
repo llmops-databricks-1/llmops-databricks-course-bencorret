@@ -1,10 +1,34 @@
 import os
+from pathlib import Path
 
 import mlflow
-from databricks.sdk.runtime import dbutils
 from delta.tables import DeltaTable
 from dotenv import load_dotenv
 from pyspark.sql import SparkSession
+
+
+def resolve_path(relative_path: str, search_levels: int = 3) -> str:
+    """Resolve a relative path by searching up the directory tree.
+
+    Useful for notebooks where the working directory differs between
+    local and Databricks environments.
+
+    Args:
+        relative_path: Relative path to resolve (e.g. "../../notes/file.yaml")
+        search_levels: Number of parent directory levels to search
+
+    Returns:
+        Resolved absolute path string, or the original path if not found
+    """
+    if Path(relative_path).is_absolute():
+        return relative_path
+    current = Path.cwd()
+    for _ in range(search_levels):
+        candidate = current / relative_path
+        if candidate.exists():
+            return str(candidate)
+        current = current.parent
+    return relative_path
 
 
 def get_widget(name: str, default: str | None = None) -> str | None:
@@ -14,6 +38,7 @@ def get_widget(name: str, default: str | None = None) -> str | None:
     :param default: Default value if widget is not set.
     :return: Widget value or default.
     """
+    from databricks.sdk.runtime import dbutils
 
     try:
         return dbutils.widgets.get(name)

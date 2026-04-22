@@ -11,7 +11,10 @@ Vector Search Index (embeddings)
 import json
 import re
 import time
+from functools import reduce
+from pathlib import Path
 
+import yaml
 from loguru import logger
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import (
@@ -220,3 +223,115 @@ class DataProcessor:
         # Step 2: Process chunks
         self.process_chunks()
         logger.info("Processing complete!")
+
+
+class CsvDataProcessor:
+    """
+    Ingests a CSV file into a Delta table, renames columns and adds comments
+    using a YAML variable dictionary.
+    """
+
+    def __init__(
+        self,
+        spark: SparkSession,
+        config: ProjectConfig,
+        csv_path: str,
+        yaml_path: str,
+    ) -> None:
+        """
+        Initialize CsvDataProcessor.
+
+        Args:
+            spark: SparkSession instance
+            config: ProjectConfig object with catalog/schema configuration
+            csv_path: Absolute path to the CSV file (e.g. in a Databricks Volume)
+            yaml_path: Absolute path to the YAML variable dictionary
+        """
+        self.spark = spark
+        self.csv_path = csv_path
+        self.catalog = config.catalog
+        self.schema = config.schema
+
+        table_name = Path(csv_path).stem
+        self.table_path = f"{self.catalog}.{self.schema}.{table_name}"
+
+        with open(yaml_path) as f:
+            self._yaml_data = yaml.safe_load(f)
+
+    def _build_rename_mapping(self) -> dict[str, str]:
+        """Return mapping of original column name -> improved column name."""
+        return {v["name"]: v["improved_col_name"] for v in self._yaml_data.values()}
+
+    def _build_comment_mapping(self) -> dict[str, str]:
+        """Return mapping of improved column name -> comment text."""
+        comment_mapping = {}
+        for v in self._yaml_data.values():
+            col_name = v["improved_col_name"]
+            label = v.get("label") or ""
+            question = v.get("question") or ""
+            if label and question:
+                comment_mapping[col_name] = f"{label} | {question}"
+            elif label:
+                comment_mapping[col_name] = label
+            elif question:
+                comment_mapping[col_name] = question
+        return comment_mapping
+
+    def ingest(self) -> None:
+        """Read CSV, rename columns using YAML mapping, and write to Delta table."""
+        rename_mapping = self._build_rename_mapping()
+
+        logger.info(f"Ingesting {self.csv_path} -> {self.table_path}")
+        df = self.spark.read.csv(self.csv_path, header=True, inferSchema=True)
+
+        df = reduce(
+            lambda d, c: d.withColumnRenamed(c, rename_mapping[c]),
+            [c for c in df.columns if c in rename_mapping and rename_mapping[c] != c],
+            df,
+        )
+        logger.info(
+            f"Renamed {sum(1 for k, v in rename_mapping.items() if k != v)} columns"
+        )
+
+        (
+            df.write.format("delta")
+            .mode("overwrite")
+            .option("mergeSchema", "true")
+            .option("overwriteSchema", "true")
+            .saveAsTable(self.table_path)
+        )
+        logger.info(f"Wrote {df.count()} rows to {self.table_path}")
+
+    def apply_comments(self) -> None:
+        """Apply column comments from YAML if not already present on the table."""
+        test_col = "has_bank_account"
+        existing_comment = None
+        for row in self.spark.sql(f"DESCRIBE TABLE {self.table_path}").collect():
+            if row["col_name"] == test_col:
+                existing_comment = row["comment"]
+                break
+
+        if existing_comment:
+            logger.info(
+                f"Column comments already present on {self.table_path} "
+                f"(e.g. `{test_col}`: '{existing_comment[:60]}…'). Skipping."
+            )
+            return
+
+        comment_mapping = self._build_comment_mapping()
+        logger.info(
+            f"Applying comments to {len(comment_mapping)} columns on {self.table_path}"
+        )
+
+        for col_name, comment_text in comment_mapping.items():
+            escaped_comment = comment_text.replace("'", "\\'")
+            self.spark.sql(
+                f"ALTER TABLE {self.table_path} ALTER COLUMN `{col_name}` COMMENT '{escaped_comment}'"
+            )
+
+        logger.info("Column comments applied successfully")
+
+    def process(self) -> None:
+        """Full workflow: ingest CSV and apply column comments."""
+        self.ingest()
+        self.apply_comments()

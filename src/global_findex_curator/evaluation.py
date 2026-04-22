@@ -1,8 +1,15 @@
+import time
+
 import mlflow
 from mlflow.genai.scorers import Guidelines
+from mlflow.types.responses import ResponsesAgentRequest
 
 from global_findex_curator.agent import FindexAgent
 from global_findex_curator.config import ProjectConfig
+
+# Pause between successive agent calls during evaluation to stay under the
+# Genie MCP rate limit (observed REQUEST_LIMIT_EXCEEDED during batch runs).
+_EVAL_PACING_SECONDS = 30
 
 polite_tone_guideline = Guidelines(
     name="polite_tone",
@@ -54,15 +61,19 @@ def evaluate_agent(
         schema=cfg.schema,
         genie_space_id=cfg.genie_space_id,
         lakebase_project_id=cfg.lakebase_project_id,
+        vs_tool_description=cfg.vs_tool_description,
     )
 
     with open(eval_inputs_path) as f:
         eval_data = [{"inputs": {"question": line.strip()}} for line in f if line.strip()]
 
     def predict_fn(question: str) -> str:
-        request = {"input": [{"role": "user", "content": question}]}
-        result = agent.predict(request)
-        return result.output[-1].content
+        request = ResponsesAgentRequest(input=[{"role": "user", "content": question}])
+        try:
+            result = agent.predict(request)
+            return result.output[-1].content[0]["text"]
+        finally:
+            time.sleep(_EVAL_PACING_SECONDS)
 
     return mlflow.genai.evaluate(
         predict_fn=predict_fn,

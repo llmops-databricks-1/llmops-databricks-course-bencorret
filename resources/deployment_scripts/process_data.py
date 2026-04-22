@@ -25,7 +25,8 @@ from pyspark.sql.types import (
 )
 
 from global_findex_curator.config import get_env, load_config
-from global_findex_curator.data_processor import DataProcessor
+from global_findex_curator.data_processor import CsvDataProcessor, DataProcessor
+from global_findex_curator.utils.common import resolve_path
 from global_findex_curator.vector_search import VectorSearchManager
 
 # COMMAND ----------
@@ -55,23 +56,16 @@ spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.{SCHEMA}")
 
 # COMMAND ----------
 
-csv_paths = [
-    f"/Volumes/{CATALOG}/{SCHEMA}/{VOLUME}/csv/findex_microdata_2025.csv",
-    f"/Volumes/{CATALOG}/{SCHEMA}/{VOLUME}/csv/global_findex_database_2025.csv",
-]
+csv_path = f"/Volumes/{CATALOG}/{SCHEMA}/{VOLUME}/csv/findex_microdata_2025.csv"
+yaml_path = resolve_path("../../notes/findex_microdata_2025_variables.yaml")
+csv_data_processor = CsvDataProcessor(
+    spark=spark,
+    config=cfg,
+    csv_path=csv_path,
+    yaml_path=yaml_path,
+)
+csv_data_processor.process()
 
-for csv_path in csv_paths:
-    table_name = csv_path.split("/")[-1].replace(".csv", "")
-    table_path = f"{CATALOG}.{SCHEMA}.{table_name}"
-    logger.info(f"Ingesting {csv_path} -> {table_path}")
-    df = spark.read.csv(csv_path, header=True, inferSchema=True)
-    (
-        df.write.format("delta")
-        .mode("overwrite")
-        .option("mergeSchema", "true")
-        .saveAsTable(table_path)
-    )
-    logger.info(f"Wrote {df.count()} rows to {table_path}")
 
 # COMMAND ----------
 
@@ -108,63 +102,6 @@ def define_global_findex_documents() -> list[dict]:
             "volume_path": f"{volume_root}/csv/findex_microdata_2025/findex_microdata_2025.csv",
         },
         {
-            "id": "documentation_microdata",
-            "title": "Documentation of microdata survey",
-            "authors": authors,
-            "summary": (
-                "PDF documentation for all columns in the microdata database. Each "
-                "cryptic column name (e.g. 'con31e') is described with its label, the "
-                "question asked to respondents, and the possible answer values. "
-                "Required to interpret the microdata CSV."
-            ),
-            "published": "2025-01-01 00:00",
-            "updated": None,
-            "categories": "Data Documentation, Survey Methodology, Financial Inclusion",
-            "document_type": "PDF",
-            "primary_category": "Data Documentation",
-            "ingestion_timestamp": ingestion_timestamp,
-            "processed": None,
-            "volume_path": f"{volume_root}/pdf/documentation_microdata/documentation_microdata.pdf",
-        },
-        {
-            "id": "Global_findex_-_The_little_data_book",
-            "title": "Global findex - The little data book",
-            "authors": authors,
-            "summary": (
-                "A compact PDF presenting aggregated financial inclusion KPIs from the "
-                "2025 Global Findex survey, broken down by income category, world "
-                "region, and individual country. Designed for quick cross-country and "
-                "cross-region comparisons."
-            ),
-            "published": "2025-01-01 00:00",
-            "updated": None,
-            "categories": "Financial Inclusion, Regional Analysis, Country Comparisons, Income Categories",
-            "document_type": "PDF",
-            "primary_category": "Financial Inclusion",
-            "ingestion_timestamp": ingestion_timestamp,
-            "processed": None,
-            "volume_path": f"{volume_root}/pdf/Global_findex_-_The_little_data_book/Global_findex_-_The_little_data_book.pdf",
-        },
-        {
-            "id": "Global_findex_2025_-_Executive_report",
-            "title": "Global findex 2025 - Executive report",
-            "authors": authors,
-            "summary": (
-                "A 56-page executive summary of the 2025 Global Findex survey findings. "
-                "Covers key topics including mobile phone ownership among adults, gender "
-                "gaps in account ownership, savings per adult, and digital merchant "
-                "payments. Aimed at a broad audience."
-            ),
-            "published": "2025-01-01 00:00",
-            "updated": None,
-            "categories": "Financial Inclusion, Digital Payments, Gender Equality, Mobile Banking",
-            "document_type": "PDF",
-            "primary_category": "Financial Inclusion",
-            "ingestion_timestamp": ingestion_timestamp,
-            "processed": None,
-            "volume_path": f"{volume_root}/pdf/Global_findex_2025_-_Executive_report/Global_findex_2025_-_Executive_report.pdf",
-        },
-        {
             "id": "Global_findex_database_2025",
             "title": "Global findex database 2025",
             "authors": authors,
@@ -182,25 +119,6 @@ def define_global_findex_documents() -> list[dict]:
             "ingestion_timestamp": ingestion_timestamp,
             "processed": None,
             "volume_path": f"{volume_root}/pdf/Global_findex_database_2025/Global_findex_database_2025.pdf",
-        },
-        {
-            "id": "global_findex_database_2025.csv",
-            "title": "Global findex 2025 curated dataset",
-            "authors": authors,
-            "summary": (
-                "A curated and enriched CSV derived from the microdata database, "
-                "containing 8,564 records with additional socio-economic headers. "
-                "Likely a refined subset of the full microdata intended for easier "
-                "analytical use."
-            ),
-            "published": "2025-01-01 00:00",
-            "updated": None,
-            "categories": "Survey data, Enriched data, Mobile integration, Financial integration",
-            "document_type": "CSV",
-            "primary_category": "Survey data",
-            "ingestion_timestamp": ingestion_timestamp,
-            "processed": None,
-            "volume_path": f"{volume_root}/csv/Global_findex_database_2025/Global_findex_database_2025.csv",
         },
     ]
 
